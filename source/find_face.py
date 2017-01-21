@@ -1,19 +1,22 @@
-import numpy as np
 import cv2
 import random
 
-"""
-    Test program from open_cv website
-    http://docs.opencv.org/trunk/d7/d8b/tutorial_py_face_detection.html
-"""
-
 # Classifiers
-CASCADE_CLASSIFIER_FACE = 'haarcascades/haarcascade_frontalface_default.xml'
-CASCADE_CLASSIFIER_EYE = 'haarcascades/haarcascade_eye.xml'
-CASCADE_CLASSIFIER_EYE_GLASSES = 'haarcascades/haarcascade_eye_tree_eyeglasses.xml'
-CASCADE_CLASSIFIER_LEFT_EYE = 'haarcascades/haarcascade_lefteye_2splits.xml'
-CASCADE_CLASSIFIER_RIGHT_EYE = 'haarcascades/haarcascade_righteye_2splits.xml'
-
+# These are currently all provided by opencv
+CASCADE_PATH = 'haarcascades/'
+CASCADE_CLASSIFIER_FACE = 'haarcascade_frontalface_default.xml'
+CASCADE_CLASSIFIER_EYE = [
+    'haarcascade_eye.xml',
+    'haarcascade_eye_tree_eyeglasses.xml',
+    'haarcascade_lefteye_2splits.xml',
+    'haarcascade_righteye_2splits.xml'
+]
+CASCADE_BOX_COLOR = [
+    (0, 0, 255),  # RED
+    (0, 255, 0),  # GREEN
+    (255, 0, 0),  # BLUE
+    (0, 255, 255) # YELLOW
+]
 
 # Image Sources
 IMAGE_PATH = '../test_data/data_set/'
@@ -21,28 +24,37 @@ LAZY_FLAG = ['noLazy', 'yesLazy']
 GLASSES_FLAG = ['noGlasses', 'yesGlasses']
 DIRECTION_FLAG = ['up', 'down', 'left', 'right', 'straight']
 
-
-# Eye to face ratios
+# Eye to Face Ratios
 FACE_TO_EYE_RATIO = 6
 
 
+"""
+destroyKresge()
+[desc]  I endorse this.
+"""
 def destroyKresge():
     cv2.destroyAllWindows()
 
 
+"""
+randomImagePath()
+[desc]  Returns a random image path.
+
+[ret]   Path to random image.
+"""
 def randomImagePath():
-    path = '../test_data/data_set/'
-    lazy = random.choice(['noLazy', 'yesLazy'])
-    glasses = random.choice(['noGlasses', 'yesGlasses'])
-    dir = random.choice(['up', 'down', 'left', 'right', 'straight'])
-    return path + glasses + '_' + lazy + '_' + dir + '.jpg'
-    
-def determineEyeMinSize(faceWidth):
-    return (faceWidth / FACE_TO_EYE_RATIO, faceWidth / FACE_TO_EYE_RATIO)
+    lazy = random.choice(LAZY_FLAG)
+    glasses = random.choice(GLASSES_FLAG)
+    dir = random.choice(DIRECTION_FLAG)
+    return IMAGE_PATH + glasses + '_' + lazy + '_' + dir + '.jpg'
 
 
-def detectFacialFeatures(imgPath, imgName):
-    face_cascade = cv2.CascadeClassifier(CASCADE_CLASSIFIER_FACE)
+"""
+detectFace()
+[desc]
+"""
+def detectFaceAndEyes(imgPath, imgName):
+    face_cascade = cv2.CascadeClassifier(CASCADE_PATH + CASCADE_CLASSIFIER_FACE)
     img = cv2.imread(imgPath + imgName)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     faces = face_cascade.detectMultiScale(gray, 1.1, 5)
@@ -51,37 +63,17 @@ def detectFacialFeatures(imgPath, imgName):
         roi_gray = gray[y:y+h, x:x+w]
         roi_color = img[y:y+h, x:x+w]
         eyeList = []
-        eyeList.extend(testCascadeClassifier(
-            cv2.CascadeClassifier(CASCADE_CLASSIFIER_EYE),
-            roi_gray,
-            roi_color,
-            (255, 0, 0), # BLUE
-            w
-        ))
-        eyeList.extend(testCascadeClassifier(
-            cv2.CascadeClassifier(CASCADE_CLASSIFIER_EYE_GLASSES),
-            roi_gray,
-            roi_color,
-            (0, 255, 0), # GREEN
-            w
-        ))
-        eyeList.extend(testCascadeClassifier(
-            cv2.CascadeClassifier(CASCADE_CLASSIFIER_LEFT_EYE),
-            roi_gray,
-            roi_color,
-            (0, 0, 255), # RED
-            w
-        ))
-        eyeList.extend(testCascadeClassifier(
-            cv2.CascadeClassifier(CASCADE_CLASSIFIER_RIGHT_EYE),
-            roi_gray,
-            roi_color,
-            (0, 255, 255), # YELLOW
-            w
-        ))
-        
 
-        # Find the midline of all boxes
+        # Run Haar Cascades for eye detection
+        for i in range(len(CASCADE_CLASSIFIER_EYE)):
+            eyeList.extend(runCascadeClassifier(
+                cv2.CascadeClassifier(CASCADE_PATH + CASCADE_CLASSIFIER_EYE[i]),
+                roi_gray,
+                CASCADE_BOX_COLOR[i],
+                w
+            ))
+
+        # Find the midline of all detected eye boxes
         totalX = 0
         for box in eyeList:
             ex, ey, _, _ = box
@@ -111,17 +103,16 @@ def detectFacialFeatures(imgPath, imgName):
         # Print averaged eyes
         cv2.rectangle(roi_color, (eyeL[0], eyeL[1]), (eyeL[0] + eyeL[2], eyeL[1] + eyeL[2]), (255,255,255), 2)
         cv2.rectangle(roi_color, (eyeR[0], eyeR[1]), (eyeR[0] + eyeR[2], eyeR[1] + eyeR[2]), (255,255,255), 2)
-
-
-
-
-
     cv2.imshow(imgName,img)
 
 
-def testCascadeClassifier(cascade, gray, color, boxColor, faceWidth):
+def determineEyeMinSize(faceWidth):
+    return (faceWidth / FACE_TO_EYE_RATIO, faceWidth / FACE_TO_EYE_RATIO)
+
+
+def runCascadeClassifier(cascade, grayScale, boxColor, faceWidth):
     feature = cascade.detectMultiScale(
-        gray,
+        grayScale,
         scaleFactor=1.1,
         minNeighbors=5,
         minSize = determineEyeMinSize(faceWidth)
@@ -130,7 +121,6 @@ def testCascadeClassifier(cascade, gray, color, boxColor, faceWidth):
     #for (ex, ey, ew, eh) in feature:
         #cv2.rectangle(color, (ex, ey), (ex + ew, ey + eh), boxColor, 2)
     return feature
-
 
 
 def testImagePath(glasses, lazy, dir):
@@ -142,7 +132,7 @@ def testRandomImage():
     glasses = random.choice(GLASSES_FLAG)
     dir = random.choice(DIRECTION_FLAG)
     imgName = testImagePath(glasses, lazy, dir)
-    detectFacialFeatures(IMAGE_PATH, imgName)
+    detectFaceAndEyes(IMAGE_PATH, imgName)
     cv2.waitKey(0)
     destroyKresge()
 
@@ -152,7 +142,7 @@ def testEveryImage():
         for lazy in LAZY_FLAG:
             for dir in DIRECTION_FLAG:
                 imgName = testImagePath(glasses, lazy, dir)
-                detectFacialFeatures(IMAGE_PATH, imgName)
+                detectFaceAndEyes(IMAGE_PATH, imgName)
                 cv2.waitKey(0)
                 destroyKresge()
                 
