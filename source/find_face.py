@@ -51,6 +51,24 @@ def createContrastedImg(eyeImg):
     # cv2.imshow('gray',cropSingleEye)
     return eyeContrast
 
+    
+def findPupils(eyeImg):
+    eyeImg = createContrastedImg(eyeImg)
+    img = cv2.cvtColor(eyeImg, cv2.COLOR_BGR2GRAY) 
+    #cimg = createContrastedImg(eyeImg)
+    #cimg = cv2.cvtColor(eyeImg,cv2.COLOR_GRAY2BGR)
+    img = cv2.medianBlur(img,5)
+    circles = cv2.HoughCircles(img,cv2.HOUGH_GRADIENT,1,20,
+                            param1=50,param2=30,minRadius=0,maxRadius=0)
+    circles = np.uint16(np.around(circles))
+    for i in circles[0,:]:
+        # draw the outer circle
+        cv2.circle(img,(i[0],i[1]),i[2],(0,255,0),2)
+        # draw the center of the circle
+        cv2.circle(img,(i[0],i[1]),2,(0,0,255),3)
+    return img
+    
+    
 cropEyeLocations = []
     
 
@@ -77,6 +95,7 @@ cv2.waitKey(0)
 cropEyeImgData = cropEye(cropEyeLocations, imgOriginal)
 for cropSingleEye in cropEyeImgData:
     cv2.imshow('cropeye',createContrastedImg(cropSingleEye))
+    #cv2.imshow('cropeye',findPupils(cropSingleEye))
     cv2.waitKey(0)
 
 
