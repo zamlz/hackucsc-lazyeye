@@ -1,16 +1,31 @@
 import numpy as np
 import cv2
+import random
 
 """
     Test program from open_cv website
     http://docs.opencv.org/trunk/d7/d8b/tutorial_py_face_detection.html
 """
 
-face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
-eye_cascade = cv2.CascadeClassifier('haarcascade_eye.xml')
-img = cv2.imread('../test_data/data_set/noGlasses_noLazy_straight.jpg')
+# Classifiers
+CASCADE_CLASSIFIER_FACE = 'haarcascades/haarcascade_frontalface_default.xml'
+CASCADE_CLASSIFIER_EYE = 'haarcascades/haarcascade_eye.xml'
+
+# Image Sources
+
+def randomImagePath():
+    path = '../test_data/data_set/'
+    lazy = random.choice(['noLazy', 'yesLazy'])
+    glasses = random.choice(['noGlasses', 'yesGlasses'])
+    dir = random.choice(['up', 'down', 'left', 'right', 'straight'])
+    return path + glasses + '_' + lazy + '_' + dir + '.jpg'
+
+face_cascade = cv2.CascadeClassifier(CASCADE_CLASSIFIER_FACE)
+eye_cascade = cv2.CascadeClassifier(CASCADE_CLASSIFIER_EYE)
+imgPath = randomImagePath()
+img = cv2.imread(imgPath)
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-faces = face_cascade.detectMultiScale(gray, 1.2, 5)
+faces = face_cascade.detectMultiScale(gray, 1.1, 5)
 for (x,y,w,h) in faces:
     cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
     roi_gray = gray[y:y+h, x:x+w]
