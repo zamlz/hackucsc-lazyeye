@@ -21,6 +21,9 @@ LAZY_FLAG = ['noLazy', 'yesLazy']
 GLASSES_FLAG = ['noGlasses', 'yesGlasses']
 DIRECTION_FLAG = ['up', 'down', 'left', 'right', 'straight']
 
+def destroyKresge():
+    cv2.destroyAllWindows()
+
 
 def randomImagePath():
     path = '../test_data/data_set/'
@@ -40,33 +43,69 @@ def detectFacialFeatures(imgPath, imgName):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     faces = face_cascade.detectMultiScale(gray, 1.1, 5)
     for (x,y,w,h) in faces:
-        cv2.rectangle(img,(x,y),(x+w,y+h),(255,255,255),2)
+        cv2.rectangle(img,(x,y),(x+w,y+h),(0,0,0),2)
         roi_gray = gray[y:y+h, x:x+w]
         roi_color = img[y:y+h, x:x+w]
-        testCascadeClassifier(
+        eyeList = []
+        eyeList.extend(testCascadeClassifier(
             cv2.CascadeClassifier(CASCADE_CLASSIFIER_EYE),
             roi_gray,
             roi_color,
             (255, 0, 0) # BLUE
-        )
-        testCascadeClassifier(
+        ))
+        eyeList.extend(testCascadeClassifier(
             cv2.CascadeClassifier(CASCADE_CLASSIFIER_EYE_GLASSES),
             roi_gray,
             roi_color,
             (0, 255, 0) # GREEN
-        )
-        testCascadeClassifier(
+        ))
+        eyeList.extend(testCascadeClassifier(
             cv2.CascadeClassifier(CASCADE_CLASSIFIER_LEFT_EYE),
             roi_gray,
             roi_color,
             (0, 0, 255) # RED
-        )
-        testCascadeClassifier(
+        ))
+        eyeList.extend(testCascadeClassifier(
             cv2.CascadeClassifier(CASCADE_CLASSIFIER_RIGHT_EYE),
             roi_gray,
             roi_color,
             (0, 255, 255) # YELLOW
-        )
+        ))
+
+        # Find the midline of all boxes
+        totalX = 0
+        for box in eyeList:
+            ex, ey, _, _ = box
+            totalX += ex
+        avgX = totalX / len(eyeList)
+
+        # Find the average box of each eye
+        leftCount = 0
+        eyeL = [0,0,0,0]
+        rightCount = 0
+        eyeR = [0,0,0,0]
+        for box in eyeList:
+            eye = [0,0,0,0]
+            eye[0], eye[1], eye[2], eye[3] = box
+            if eye[0] < avgX: # Image left eye
+                leftCount += 1
+                for i in range(4):
+                    eyeL[i] += eye[i]
+            else: # Image right eye
+                rightCount += 1
+                for i in range(4):
+                    eyeR[i] += eye[i]
+        for i in range(4):
+            eyeL[i] = eyeL[i] / leftCount
+            eyeR[i] = eyeR[i] / rightCount
+
+        # Print averaged eyes
+        cv2.rectangle(roi_color, (eyeL[0], eyeL[1]), (eyeL[0] + eyeL[2], eyeL[1] + eyeL[2]), (255,255,255), 2)
+        cv2.rectangle(roi_color, (eyeR[0], eyeR[1]), (eyeR[0] + eyeR[2], eyeR[1] + eyeR[2]), (255,255,255), 2)
+
+
+
+
 
     cv2.imshow(imgName,img)
 
@@ -78,8 +117,10 @@ def testCascadeClassifier(cascade, gray, color, boxColor):
         minNeighbors=5,
         minSize=(75, 75)
     )
-    for (ex, ey, ew, eh) in feature:
-        cv2.rectangle(color, (ex, ey), (ex + ew, ey + eh), boxColor, 2)
+    # Print out box
+    #for (ex, ey, ew, eh) in feature:
+        #cv2.rectangle(color, (ex, ey), (ex + ew, ey + eh), boxColor, 2)
+    return feature
 
 
 
@@ -94,7 +135,7 @@ def testRandomImage():
     imgName = testImagePath(glasses, lazy, dir)
     detectFacialFeatures(IMAGE_PATH, imgName)
     cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    destroyKresge()
 
 
 def testEveryImage():
@@ -104,7 +145,7 @@ def testEveryImage():
                 imgName = testImagePath(glasses, lazy, dir)
                 detectFacialFeatures(IMAGE_PATH, imgName)
                 cv2.waitKey(0)
-                cv2.destroyAllWindows()
+                destroyKresge()
 
 testEveryImage()
 
