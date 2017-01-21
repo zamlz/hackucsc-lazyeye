@@ -37,11 +37,10 @@ def cropEye(cropEyeLoc, imgData):
 def colorAvg(img):
     color = 0
     y, x = img.shape
-    threshRange = y
     for i in range(x):
-        for j in range(threshRange):
+        for j in range(y):
             color += int(img[-j,i])
-    return color/(x * threshRange)
+    return color/(x * y)
 
 cropEyeLocations = []
     
