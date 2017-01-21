@@ -20,6 +20,9 @@ LAZY_FLAG = ['noLazy', 'yesLazy']
 GLASSES_FLAG = ['noGlasses', 'yesGlasses']
 DIRECTION_FLAG = ['up', 'down', 'left', 'right', 'straight']
 
+def destroyKresge():
+    cv2.destroyAllWindows()
+
 
 def detectFacialFeatures(imgPath, imgName):
     face_cascade = cv2.CascadeClassifier(CASCADE_CLASSIFIER_FACE)
@@ -81,7 +84,7 @@ def testRandomImage():
     imgName = testImagePath(glasses, lazy, dir)
     detectFacialFeatures(IMAGE_PATH, imgName)
     cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    cv2.destroyKresge()
 
 
 def testEveryImage():
@@ -91,6 +94,6 @@ def testEveryImage():
                 imgName = testImagePath(glasses, lazy, dir)
                 detectFacialFeatures(IMAGE_PATH, imgName)
                 cv2.waitKey(0)
-                cv2.destroyAllWindows()
+                cv2.destroyKresge()
 
 testEveryImage()
