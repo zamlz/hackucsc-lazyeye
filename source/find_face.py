@@ -26,6 +26,13 @@ def cropEye(cropEyeLoc, imgData):
     for (x1,x2,y1,y2) in cropEyeLoc:
         croppedEyes.append(imgData[y1:y2, x1:x2])
     return croppedEyes
+    
+def colorAvg(img):
+    color = 0
+    x,y = img.shape
+    for i in range(y):
+        color += int(img[-10,i])
+    return color/y
 
 cropEyeLocations = []
     
@@ -33,6 +40,7 @@ cropEyeLocations = []
 face_cascade = cv2.CascadeClassifier(CASCADE_CLASSIFIER_FACE)
 eye_cascade = cv2.CascadeClassifier(CASCADE_CLASSIFIER_EYE)
 imgPath = randomImagePath()
+print imgPath
 img = cv2.imread(imgPath)
 imgOriginal = cv2.imread(imgPath)
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -51,7 +59,13 @@ cv2.waitKey(0)
 
 cropEyeImgData = cropEye(cropEyeLocations, imgOriginal)
 for cropSingleEye in cropEyeImgData:
-    cv2.imshow('cropEye',cropSingleEye)
+    cropSingleEye = cv2.cvtColor(cropSingleEye, cv2.COLOR_BGR2GRAY)
+    color = colorAvg(cropSingleEye)
+    ret,thresh1 = cv2.threshold(cropSingleEye,color-20,255,cv2.THRESH_BINARY)
+  #  histeq = cv2.equalizeHist(cropSingleEye)
+    cv2.imshow('crop',thresh1)
+    cv2.imshow('gray',cropSingleEye)
+    print color
     cv2.waitKey(0)
 
 
