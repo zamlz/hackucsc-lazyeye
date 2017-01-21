@@ -1,7 +1,9 @@
 import numpy as np
 import cv2
 import random
-
+import threading
+import time
+import os
 """
     Test program from open_cv website
     http://docs.opencv.org/trunk/d7/d8b/tutorial_py_face_detection.html
@@ -43,27 +45,65 @@ cv2.destroyAllWindows()
 """
 Testing live video feature
 """
+def trackFromWebcam():
+    while(True):
+        cap = cv2.VideoCapture(1)
+        ret, frame = cap.read()
+        startFrame = 20
+        endFrame = 30
+        count = 0
 
-cap = cv2.VideoCapture(1)
+        while cap.isOpened():
+            success, frame = cap.read()
+            if success and endFrame > count > startFrame :
+                count+=1
+                face_cascade = cv2.CascadeClassifier(CASCADE_CLASSIFIER_FACE)
+                eye_cascade = cv2.CascadeClassifier(CASCADE_CLASSIFIER_EYE)
 
-while(True):
-    ret, frame = cap.read()
+                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                faces = face_cascade.detectMultiScale(gray, 1.1, 5)
+                for (x, y, w, h) in faces:
+                    cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
+                    roi_gray = gray[y:y + h, x:x + w]
+                    roi_color = frame[y:y + h, x:x + w]
+                    eyes = eye_cascade.detectMultiScale(roi_gray)
 
-    face_cascade = cv2.CascadeClassifier(CASCADE_CLASSIFIER_FACE)
-    eye_cascade = cv2.CascadeClassifier(CASCADE_CLASSIFIER_EYE)
+                    for (ex, ey, ew, eh) in eyes:
+                        cv2.rectangle(roi_color, (ex, ey), (ex + ew, ey + eh), (0, 255, 0), 2)
+                cv2.imshow('frame', frame)
+                if(count is endFrame):
+                    count = 0
+            else:
+                if success:
+                    cv2.imshow('frame', frame)
+                    count += 1
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+        cap.release()
+        cv2.destroyAllWindows()
+        exit(0)
+        """
+        img = cv2.imread(imgPath)
+        face_cascade = cv2.CascadeClassifier(CASCADE_CLASSIFIER_FACE)
+        eye_cascade = cv2.CascadeClassifier(CASCADE_CLASSIFIER_EYE)
 
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    faces = face_cascade.detectMultiScale(gray, 1.1, 5)
-    for (x, y, w, h) in faces:
-        cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
-        roi_gray = gray[y:y + h, x:x + w]
-        roi_color = frame[y:y + h, x:x + w]
-        eyes = eye_cascade.detectMultiScale(roi_gray)
-        for (ex, ey, ew, eh) in eyes:
-            cv2.rectangle(roi_color, (ex, ey), (ex + ew, ey + eh), (0, 255, 0), 2)
-    cv2.imshow('frame', frame)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        faces = face_cascade.detectMultiScale(gray, 1.1, 5)
+        for (x, y, w, h) in faces:
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
+            roi_gray = gray[y:y + h, x:x + w]
+            roi_color = frame[y:y + h, x:x + w]
+            eyes = eye_cascade.detectMultiScale(roi_gray)
 
-cap.release()
-cv2.destroyAllWindows()
+            for (ex, ey, ew, eh) in eyes:
+                cv2.rectangle(roi_color, (ex, ey), (ex + ew, ey + eh), (0, 255, 0), 2)
+        cv2.imshow('frame', frame)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+
+         """
+
+
+
+trackFromWebcam()
