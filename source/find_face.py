@@ -20,7 +20,14 @@ def randomImagePath():
     dir = random.choice(['up', 'down', 'left', 'right', 'straight'])
     return path + glasses + '_' + lazy + '_' + dir + '.jpg'
 
-
+"""
+    cropEye() - Takes in eye location data and
+                and the original image data
+    cropEyeLoc - Contains a list of tuples with
+                 the eye locations. tuples are
+                 of the form (x1,x2,y1,y2)
+    imgData - Image data to crop eyes from
+"""
 def cropEye(cropEyeLoc, imgData):
     croppedEyes = []
     for (x1,x2,y1,y2) in cropEyeLoc:
