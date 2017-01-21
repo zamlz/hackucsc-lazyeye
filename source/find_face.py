@@ -21,6 +21,11 @@ LAZY_FLAG = ['noLazy', 'yesLazy']
 GLASSES_FLAG = ['noGlasses', 'yesGlasses']
 DIRECTION_FLAG = ['up', 'down', 'left', 'right', 'straight']
 
+
+# Eye to face ratios
+FACE_TO_EYE_RATIO = 6
+
+
 def destroyKresge():
     cv2.destroyAllWindows()
 
@@ -32,9 +37,8 @@ def randomImagePath():
     dir = random.choice(['up', 'down', 'left', 'right', 'straight'])
     return path + glasses + '_' + lazy + '_' + dir + '.jpg'
     
-def isProportional(fWidth, eWidth):
-    wRatio = fWidth / eWidth
-    return True if (2.5 <= wRatio <= 6) else False
+def determineEyeMinSize(faceWidth):
+    return (faceWidth / FACE_TO_EYE_RATIO, faceWidth / FACE_TO_EYE_RATIO)
 
 
 def detectFacialFeatures(imgPath, imgName):
@@ -51,26 +55,31 @@ def detectFacialFeatures(imgPath, imgName):
             cv2.CascadeClassifier(CASCADE_CLASSIFIER_EYE),
             roi_gray,
             roi_color,
-            (255, 0, 0) # BLUE
+            (255, 0, 0), # BLUE
+            w
         ))
         eyeList.extend(testCascadeClassifier(
             cv2.CascadeClassifier(CASCADE_CLASSIFIER_EYE_GLASSES),
             roi_gray,
             roi_color,
-            (0, 255, 0) # GREEN
+            (0, 255, 0), # GREEN
+            w
         ))
         eyeList.extend(testCascadeClassifier(
             cv2.CascadeClassifier(CASCADE_CLASSIFIER_LEFT_EYE),
             roi_gray,
             roi_color,
-            (0, 0, 255) # RED
+            (0, 0, 255), # RED
+            w
         ))
         eyeList.extend(testCascadeClassifier(
             cv2.CascadeClassifier(CASCADE_CLASSIFIER_RIGHT_EYE),
             roi_gray,
             roi_color,
-            (0, 255, 255) # YELLOW
+            (0, 255, 255), # YELLOW
+            w
         ))
+        
 
         # Find the midline of all boxes
         totalX = 0
@@ -110,12 +119,12 @@ def detectFacialFeatures(imgPath, imgName):
     cv2.imshow(imgName,img)
 
 
-def testCascadeClassifier(cascade, gray, color, boxColor):
+def testCascadeClassifier(cascade, gray, color, boxColor, faceWidth):
     feature = cascade.detectMultiScale(
         gray,
         scaleFactor=1.1,
         minNeighbors=5,
-        minSize=(75, 75)
+        minSize = determineEyeMinSize(faceWidth)
     )
     # Print out box
     #for (ex, ey, ew, eh) in feature:
