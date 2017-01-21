@@ -20,10 +20,21 @@ def randomImagePath():
     dir = random.choice(['up', 'down', 'left', 'right', 'straight'])
     return path + glasses + '_' + lazy + '_' + dir + '.jpg'
 
+
+def cropEye(cropEyeLoc, imgData):
+    croppedEyes = []
+    for (x1,x2,y1,y2) in cropEyeLoc:
+        croppedEyes.append(imgData[y1:y2, x1:x2])
+    return croppedEyes
+
+cropEyeLocations = []
+    
+
 face_cascade = cv2.CascadeClassifier(CASCADE_CLASSIFIER_FACE)
 eye_cascade = cv2.CascadeClassifier(CASCADE_CLASSIFIER_EYE)
 imgPath = randomImagePath()
 img = cv2.imread(imgPath)
+imgOriginal = cv2.imread(imgPath)
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 faces = face_cascade.detectMultiScale(gray, 1.1, 5)
 for (x,y,w,h) in faces:
@@ -33,6 +44,16 @@ for (x,y,w,h) in faces:
     eyes = eye_cascade.detectMultiScale(roi_gray)
     for (ex,ey,ew,eh) in eyes:
         cv2.rectangle(roi_color,(ex,ey),(ex+ew,ey+eh),(0,255,0),2)
+        cropEyeLocations.append((x+ex, x+ex+ew, y+ey, y+ey+eh))        
 cv2.imshow('img',img)
+
 cv2.waitKey(0)
+
+cropEyeImgData = cropEye(cropEyeLocations, imgOriginal)
+for cropSingleEye in cropEyeImgData:
+    cv2.imshow('cropEye',cropSingleEye)
+    cv2.waitKey(0)
+
+
 cv2.destroyAllWindows()
+
