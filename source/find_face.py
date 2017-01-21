@@ -84,7 +84,7 @@ def testRandomImage():
     imgName = testImagePath(glasses, lazy, dir)
     detectFacialFeatures(IMAGE_PATH, imgName)
     cv2.waitKey(0)
-    cv2.destroyKresge()
+    destroyKresge()
 
 
 def testEveryImage():
@@ -94,6 +94,6 @@ def testEveryImage():
                 imgName = testImagePath(glasses, lazy, dir)
                 detectFacialFeatures(IMAGE_PATH, imgName)
                 cv2.waitKey(0)
-                cv2.destroyKresge()
+                destroyKresge()
 
 testEveryImage()
