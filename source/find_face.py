@@ -146,9 +146,16 @@ def testEveryImage():
                 detectFacialFeatures(IMAGE_PATH, imgName)
                 cv2.waitKey(0)
                 destroyKresge()
+                
+                
+def main():
+    testEveryImage()
+        
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    
 
-testEveryImage()
+if __name__ == '__main__':
+    main()
 
-cv2.waitKey(0)
-cv2.destroyAllWindows()
 
