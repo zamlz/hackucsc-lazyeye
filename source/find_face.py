@@ -10,6 +10,7 @@ import random
 # Classifiers
 CASCADE_CLASSIFIER_FACE = 'haarcascades/haarcascade_frontalface_default.xml'
 CASCADE_CLASSIFIER_EYE = 'haarcascades/haarcascade_eye.xml'
+CASCADE_CLASSIFIER_GLASSES = 'haarcascades/haarcascade_eye_tree_eyeglasses.xml'
 
 # Image Sources
 
@@ -19,9 +20,13 @@ def randomImagePath():
     glasses = random.choice(['noGlasses', 'yesGlasses'])
     dir = random.choice(['up', 'down', 'left', 'right', 'straight'])
     return path + glasses + '_' + lazy + '_' + dir + '.jpg'
+    
+def isProportional(fWidth, eWidth):
+    wRatio = fWidth / eWidth
+    return True if (2.5 <= wRatio <= 6) else False
 
 face_cascade = cv2.CascadeClassifier(CASCADE_CLASSIFIER_FACE)
-eye_cascade = cv2.CascadeClassifier(CASCADE_CLASSIFIER_EYE)
+eye_cascade = cv2.CascadeClassifier(CASCADE_CLASSIFIER_GLASSES)
 imgPath = randomImagePath()
 img = cv2.imread(imgPath)
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
