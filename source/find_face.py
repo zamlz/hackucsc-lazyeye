@@ -42,6 +42,15 @@ def colorAvg(img):
             color += int(img[-j,i])
     return color/(x * y)
 
+
+def createContrastedImg(eyeImg):
+    eyeImg = cv2.cvtColor(eyeImg, cv2.COLOR_BGR2GRAY)   
+    averageColor = colorAvg(eyeImg)
+    ret,eyeContrast = cv2.threshold(eyeImg,averageColor,255,cv2.THRESH_BINARY)
+    #  histeq = cv2.equalizeHist(cropSingleEye)
+    # cv2.imshow('gray',cropSingleEye)
+    return eyeContrast
+
 cropEyeLocations = []
     
 
@@ -67,13 +76,7 @@ cv2.waitKey(0)
 
 cropEyeImgData = cropEye(cropEyeLocations, imgOriginal)
 for cropSingleEye in cropEyeImgData:
-    cropSingleEye = cv2.cvtColor(cropSingleEye, cv2.COLOR_BGR2GRAY)
-    color = colorAvg(cropSingleEye)
-    ret,thresh1 = cv2.threshold(cropSingleEye,color,255,cv2.THRESH_BINARY)
-  #  histeq = cv2.equalizeHist(cropSingleEye)
-    cv2.imshow('crop',thresh1)
-    # cv2.imshow('gray',cropSingleEye)
-    print color
+    cv2.imshow('cropeye',createContrastedImg(cropSingleEye))
     cv2.waitKey(0)
 
 
