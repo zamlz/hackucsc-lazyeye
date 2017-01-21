@@ -36,10 +36,12 @@ def cropEye(cropEyeLoc, imgData):
     
 def colorAvg(img):
     color = 0
-    x,y = img.shape
-    for i in range(y):
-        color += int(img[-10,i])
-    return color/y
+    y, x = img.shape
+    threshRange = y
+    for i in range(x):
+        for j in range(threshRange):
+            color += int(img[-j,i])
+    return color/(x * threshRange)
 
 cropEyeLocations = []
     
@@ -68,10 +70,10 @@ cropEyeImgData = cropEye(cropEyeLocations, imgOriginal)
 for cropSingleEye in cropEyeImgData:
     cropSingleEye = cv2.cvtColor(cropSingleEye, cv2.COLOR_BGR2GRAY)
     color = colorAvg(cropSingleEye)
-    ret,thresh1 = cv2.threshold(cropSingleEye,color-20,255,cv2.THRESH_BINARY)
+    ret,thresh1 = cv2.threshold(cropSingleEye,color,255,cv2.THRESH_BINARY)
   #  histeq = cv2.equalizeHist(cropSingleEye)
     cv2.imshow('crop',thresh1)
-    cv2.imshow('gray',cropSingleEye)
+    # cv2.imshow('gray',cropSingleEye)
     print color
     cv2.waitKey(0)
 
