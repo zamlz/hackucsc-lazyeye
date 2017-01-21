@@ -49,13 +49,14 @@ def trackFromWebcam():
     while(True):
         cap = cv2.VideoCapture(1)
         ret, frame = cap.read()
-        startFrame = 20
-        endFrame = 30
+        startFrame = 60
+        endFrame = 85
         count = 0
 
         while cap.isOpened():
             success, frame = cap.read()
             if success and endFrame > count > startFrame :
+
                 count+=1
                 face_cascade = cv2.CascadeClassifier(CASCADE_CLASSIFIER_FACE)
                 eye_cascade = cv2.CascadeClassifier(CASCADE_CLASSIFIER_EYE)
@@ -63,6 +64,7 @@ def trackFromWebcam():
                 gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                 faces = face_cascade.detectMultiScale(gray, 1.1, 5)
                 for (x, y, w, h) in faces:
+
                     cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
                     roi_gray = gray[y:y + h, x:x + w]
                     roi_color = frame[y:y + h, x:x + w]
