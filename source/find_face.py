@@ -30,8 +30,8 @@ CASCADE_BOX_COLOR = [
     (0, 255, 255) # YELLOW
 ]
 
-
-FACE_SCALE_FACTOR = 1.1
+# Classifier Flags
+FACE_SCALE_FACTOR = 1.2
 FACE_MIN_NEIGHBORS = 5
 EYE_SCALE_FACTOR = 1.1
 EYE_MIN_NEIGHBORS = 5
@@ -67,6 +67,10 @@ def findFaceAndEyes(imgPath, imgName):
         faceColored = img[y:y + h, x:x + w]
         
         leftEye, rightEye = findEyes(w, faceGrayed, faceColored)
+        if leftEye is None:
+            continue
+
+        # Pupil Detection
         eyeLocations = packageEyes([leftEye, rightEye], x, y)
         eyeData = eml.cropEye(eyeLocations, imgPath+imgName)
         isLazy, pupilLoc = eml.isEyeLazy(eyeData)
@@ -82,10 +86,6 @@ def findFaceAndEyes(imgPath, imgName):
         
     # Display the image
     cv2.imshow(imgName,img)
-
-    
- 
-
 
 
 """
@@ -104,10 +104,6 @@ def findFaces(gray):
         scaleFactor = FACE_SCALE_FACTOR,
         minNeighbors = FACE_MIN_NEIGHBORS
     )
-    
-    
-    
-
 
 
 """
@@ -120,7 +116,8 @@ findEyes()
 [color] Color version of the image/
 
 [ret]   Two tuples containing the x, y, width, and height of
-        the eyes.
+        the eyes. If no eyes are detected within the face,
+        it returns a tuple of Nones.
 """
 def findEyes(faceWidth, gray, color):
     eyeList = []
@@ -139,6 +136,9 @@ def findEyes(faceWidth, gray, color):
         # for (ex, ey, ew, eh) in feature:
         # cv2.rectangle(color, (ex, ey), (ex + ew, ey + eh), CASCADE_BOX_COLOR[i], 2)
 
+    if len(eyeList) == 0:
+        return None, None
+
     # Find the midline of all detected eye boxes
     midline = findFaceMidline(eyeList)
 
@@ -154,7 +154,6 @@ def findEyes(faceWidth, gray, color):
         (eyeL[0], eyeL[1], eyeL[2], eyeL[3]),
         (eyeR[0], eyeR[1], eyeR[2], eyeR[3])
     )
-
 
 
 #######################
@@ -188,10 +187,6 @@ def testEveryImage():
                 findFaceAndEyes(IMAGE_PATH, imgName)
                 cv2.waitKey(0)
                 destroyKresge()
-                #eyeLocations = detectFaceAndEyes(IMAGE_PATH, imgName)
-                #eyeImgData = eml.cropEye(eyeLocations, IMAGE_PATH+imgName)
-                #print imgName
-                #print eml.isEyeLazy(eyeImgData)
 
 
 
@@ -216,7 +211,6 @@ def packageEyes(eyes,x,y):
         pkgEye.append((x+ex, x+ex+ew, y+ey, y+ey+eh ))
     return pkgEye
     
-
 
 """
 determineEyeMinSize()
@@ -287,6 +281,7 @@ def averageEyeBoxes(eyeList, midline):
 
     return (eyeL, eyeR)
 
+
 """
 destroyKresge()
 [desc]  I endorse this.
@@ -304,6 +299,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-
