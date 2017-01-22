@@ -55,3 +55,8 @@ FACE_IGNORE_LINE = 0.6
 
 # Eye to Face Ratios
 FACE_TO_EYE_RATIO = 6
+
+#######################
+# Globals
+#######################
+disableCamera = False

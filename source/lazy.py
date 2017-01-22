@@ -1,5 +1,5 @@
 import sys
-import find_face
+import live_vid
 import const
 from PyQt5 import QtCore, QtGui, QtWidgets
 
@@ -43,6 +43,13 @@ class SystemTrayIcon(QtWidgets.QSystemTrayIcon):
             icon = QtGui.QIcon(QtGui.QPixmap(const.TRAY_ICON[self.cameraState]))
             self.setIcon(icon)
 
+            # Toggle webcam
+            if self.cameraState == const.CAMERA_INACTIVE:
+                const.disableCamera = True
+            else:
+                const.disableCamera = False
+                live_vid.main()
+
 
     """
     fireAlertMessage()
@@ -68,7 +75,7 @@ def main():
     trayIcon = SystemTrayIcon(icon)
     trayIcon.activated.connect(trayIcon.toggle)
     trayIcon.show()
-    find_face.main()
+    live_vid.main()
     sys.exit(app.exec_())
 
 
