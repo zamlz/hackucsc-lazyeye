@@ -3,7 +3,6 @@ import live_vid
 import const
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-
 #######################
 # SystemTrayIcon Class
 #######################
@@ -57,10 +56,10 @@ class SystemTrayIcon(QtWidgets.QSystemTrayIcon):
 
     [time] Millisecs of the alert bubble.
     """
-    def fireAlertMessage(self, time):
+    def fireAlertMessage(self, msg, time):
         if self.supportsMessages():
             self.showMessage(const.ALERT_TITLE,
-                             const.ALERT_MESSAGE,
+                             const.ALERT_MESSAGE[msg],
                              QtWidgets.QSystemTrayIcon.Information,
                              time)
 
@@ -73,6 +72,7 @@ def main():
     style = app.style()
     icon = QtGui.QIcon(QtGui.QPixmap(const.TRAY_ICON[const.CAMERA_ACTIVE]))
     trayIcon = SystemTrayIcon(icon)
+    const.systemTrayIcon = trayIcon
     trayIcon.activated.connect(trayIcon.toggle)
     trayIcon.show()
     live_vid.main()

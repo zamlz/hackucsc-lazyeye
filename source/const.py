@@ -1,3 +1,6 @@
+from collections import deque
+import win32api
+
 #######################
 # Tray Constants
 #######################
@@ -15,9 +18,16 @@ TRAY_TOOLTIP = [
 CAMERA_INACTIVE = 0
 CAMERA_ACTIVE = 1
 
-# Alert Messages
+# Alert Messages and Flags
 ALERT_TITLE = "Lazy Eye Watchdog"
-ALERT_MESSAGE = "Your lazy eye is acting up!"
+ALERT_MESSAGE = [
+    "Your lazy eye is acting up!",
+    "Your lazy eye is fixed!"
+]
+LAZY_EYE_DETECTED = 0
+LAZY_EYE_FIXED = 1
+LAZY_EYE_ALERT_TIME = 10000
+LAZY_EYE_FIX_TIME = 2500
 
 
 #######################
@@ -57,6 +67,26 @@ FACE_IGNORE_LINE = 0.6
 FACE_TO_EYE_RATIO = 6
 
 #######################
+# Live Video Tracking
+#######################
+#Neccesary vars
+VK_MEDIA_PLAY_PAUSE = 0xB3
+HWCODE = win32api.MapVirtualKey(VK_MEDIA_PLAY_PAUSE,0)
+
+# Camera is set to 0. This is the default camera it looks at.
+# We should reference a setting file for this, but we will handle
+# that later
+CAMERA = 0
+BUFFER = deque([])
+BUFFER_SIZE = 30
+
+# State Machine Variables
+STATE_LOW_THRESH = 25
+STATE_HIGH_THRESH = 45
+
+#######################
 # Globals
 #######################
+systemTrayIcon = None
 disableCamera = False
+stateLocked = False

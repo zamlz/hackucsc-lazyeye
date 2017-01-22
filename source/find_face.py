@@ -61,7 +61,7 @@ def findFaceAndEyesCore(img):
         faceColored = img[y:y + h, x:x + w]
 
         leftEye, rightEye = findEyes(face, faceGrayed, faceColored)
-        if leftEye is None:
+        if leftEye is None: # Break if only one eye is found
             continue
 
         # Pupil Detection
