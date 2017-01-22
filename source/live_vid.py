@@ -8,10 +8,17 @@ from collections import deque
 CASCADE_CLASSIFIER_FACE = 'haarcascades/haarcascade_frontalface_default.xml'
 CASCADE_CLASSIFIER_EYE = 'haarcascades/haarcascade_eye.xml'
 
+# Camera is set to 0. This is the default camera it looks at.
+# We should reference a setting file for this, but we will handle
+# that later
 CAMERA = 0
 BUFFER = deque([])
 BUFFER_SIZE = 30
-BUFFER_THRESH_PERCENT = 50
+
+# State Machine Variables
+STATE_LOCKED = False
+STATE_LOW_THRESH = 25
+STATE_HIGH_THRESH = 45
 
 for i in xrange(BUFFER_SIZE):
     BUFFER.append(1)
