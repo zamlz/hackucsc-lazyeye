@@ -49,7 +49,7 @@ IMAGE_PATH = '../test_data/new_set/'
 LAZY_FLAG = ['lazy0', 'lazy1', 'lazy2']
 GLASSES_FLAG = ['noGlasses']
 DIRECTION_FLAG = ['left', 'right', 'straight']
-TESTING_BOXES = True
+TESTING_BOXES = False
 
 # Classifiers
 # These are currently all provided by opencv
