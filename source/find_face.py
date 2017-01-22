@@ -125,6 +125,7 @@ findEyes()
 
 def findEyes(face, gray, color):
     x, y, w, h = face
+    minEyeBoxSize = determineEyeMinSize(w)
     eyeList = []
 
     # Run Haar Cascades for eye detection
@@ -134,15 +135,16 @@ def findEyes(face, gray, color):
             gray,
             scaleFactor=const.EYE_SCALE_FACTOR,
             minNeighbors=const.EYE_MIN_NEIGHBORS,
-            minSize=determineEyeMinSize(w)
+            minSize=(minEyeBoxSize,minEyeBoxSize)
         )
         for box in features:
             bx, by, bw, bh = box
             if by < h * const.FACE_IGNORE_LINE:
                 eyeList.append(box)
                 # Outline box
-                # for (ex, ey, ew, eh) in feature:
-                # cv2.rectangle(color, (ex, ey), (ex + ew, ey + eh), CASCADE_BOX_COLOR[i], 2)
+                if const.TESTING_BOXES:
+                    (ex, ey, ew, eh) = box
+                    cv2.rectangle(color, (ex, ey), (ex + ew, ey + eh), const.CASCADE_BOX_COLOR[i], 2)
 
     if len(eyeList) < 2:
         return None, None
@@ -153,8 +155,9 @@ def findEyes(face, gray, color):
     # Average eye boxes for both eyes
     eyeL, eyeR = averageEyeBoxes(eyeList, midline)
 
-    if eyeL is None:
+    if eyeL is None or abs(midline - eyeL[0]) < minEyeBoxSize * const.EYE_BOX_SEPARATION_THRESHOLD:
         return None, None
+
 
     # Outline averaged eyes
     cv2.rectangle(color, (eyeL[0], eyeL[1]), (eyeL[0] + eyeL[2], eyeL[1] + eyeL[2]), (255, 255, 255), 2)
@@ -233,8 +236,7 @@ determineEyeMinSize()
 [ret]   Tuple containing the minimum size of the eye box.
 """
 def determineEyeMinSize(faceWidth):
-    minSize = faceWidth / const.FACE_TO_EYE_RATIO
-    return (minSize, minSize)
+    return faceWidth / const.FACE_TO_EYE_RATIO
 
 
 """

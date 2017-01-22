@@ -44,11 +44,12 @@ TOGGLE_MESSAGE = [
 #######################
 # Feature Detection
 #######################
-# Image Sources
+# Test Image Sources
 IMAGE_PATH = '../test_data/new_set/'
 LAZY_FLAG = ['lazy0', 'lazy1', 'lazy2']
 GLASSES_FLAG = ['noGlasses']
 DIRECTION_FLAG = ['left', 'right', 'straight']
+TESTING_BOXES = True
 
 # Classifiers
 # These are currently all provided by opencv
@@ -72,7 +73,10 @@ FACE_SCALE_FACTOR = 1.1
 FACE_MIN_NEIGHBORS = 5
 EYE_SCALE_FACTOR = 1.1
 EYE_MIN_NEIGHBORS = 5
-FACE_IGNORE_LINE = 0.6
+
+# Facial Detection Patches
+FACE_IGNORE_LINE = 0.55
+EYE_BOX_SEPARATION_THRESHOLD = 0.75
 
 # Eye to Face Ratios
 FACE_TO_EYE_RATIO = 6
