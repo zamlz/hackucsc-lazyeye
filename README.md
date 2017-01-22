@@ -1,12 +1,18 @@
 # Hack UCSC 2017 - Who's Lazy? Not Eye.
 Who's Lazy, Not Eye allows any webcam to act as vision therapy for lazy eye by monitoring their eyes as they use their PC.  It will pause your media player if your eyes go lazy and will resume once you bring your eyes back into focus.  This is not guaranteed to work on all media players. This is currently a work in progress.
+
+For Collaborators, here is the [Planning Thread](https://github.com/zAMLz/hackucsc-lazyeye/issues/1)
+
 ##Tested Media Players
 * Spotify
 * VLC
 * Media player Classic
 * Windows Media Player
 
-For Collaborators, here is the [Planning Thread](https://github.com/zAMLz/hackucsc-lazyeye/issues/1)
+### Here it is in action
+![James1](source/images/James-Test.gif)
+
+![James2](source/images/James-Test2.gif)
 
 ## Install
 To use this program, you must first ensure that you have the proper dependencies. It is highly recommened to use a python distribution such as anaconda or WinPython as it will proved alot of the necessary libraries for you.
