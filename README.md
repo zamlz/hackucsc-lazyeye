@@ -7,5 +7,5 @@ For Collaborators, here is the [Planning Thread](https://github.com/zAMLz/hackuc
 ## Install
 To use this program, you must first ensure that you have the proper dependencies. It is highly recommened to use a python distribution such as anaconda or WinPython as it will proved alot of the necessary libraries for you.
 * OpenCV version 3.2
-
+* Playerctl (linux)
 This program was also coded to be used for Python 2.
