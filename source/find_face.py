@@ -1,37 +1,6 @@
 import cv2
 import random
-
-# Image Sources
-IMAGE_PATH = '../test_data/data_set/'
-LAZY_FLAG = ['noLazy', 'yesLazy']
-GLASSES_FLAG = ['noGlasses', 'yesGlasses']
-DIRECTION_FLAG = ['up', 'down', 'left', 'right', 'straight']
-
-# Classifiers
-# These are currently all provided by opencv
-CASCADE_PATH = 'haarcascades/'
-CASCADE_CLASSIFIER_FACE = 'haarcascade_frontalface_default.xml'
-CASCADE_CLASSIFIER_EYE = [
-    'haarcascade_eye.xml',
-    'haarcascade_eye_tree_eyeglasses.xml',
-    'haarcascade_lefteye_2splits.xml',
-    'haarcascade_righteye_2splits.xml'
-]
-CASCADE_BOX_COLOR = [
-    (0, 0, 255),  # RED
-    (0, 255, 0),  # GREEN
-    (255, 0, 0),  # BLUE
-    (0, 255, 255) # YELLOW
-]
-
-# Cascade flags
-FACE_SCALE_FACTOR = 1.1
-FACE_MIN_NEIGHBORS = 5
-EYE_SCALE_FACTOR = 1.1
-EYE_MIN_NEIGHBORS = 5
-
-# Eye to Face Ratios
-FACE_TO_EYE_RATIO = 6
+import const
 
 
 #######################
@@ -72,11 +41,11 @@ findFaces()
         the face box.
 """
 def findFaces(gray):
-    face_cascade = cv2.CascadeClassifier(CASCADE_PATH + CASCADE_CLASSIFIER_FACE)
+    face_cascade = cv2.CascadeClassifier(const.CASCADE_PATH + const.CASCADE_CLASSIFIER_FACE)
     return face_cascade.detectMultiScale(
         gray,
-        scaleFactor = FACE_SCALE_FACTOR,
-        minNeighbors = FACE_MIN_NEIGHBORS
+        scaleFactor = const.FACE_SCALE_FACTOR,
+        minNeighbors = const.FACE_MIN_NEIGHBORS
     )
 
 
@@ -96,12 +65,12 @@ def findEyes(faceWidth, gray, color):
     eyeList = []
 
     # Run Haar Cascades for eye detection
-    for i in range(len(CASCADE_CLASSIFIER_EYE)):
-        classifier = cv2.CascadeClassifier(CASCADE_PATH + CASCADE_CLASSIFIER_EYE[i])
+    for i in range(len(const.CASCADE_CLASSIFIER_EYE)):
+        classifier = cv2.CascadeClassifier(const.CASCADE_PATH + const.CASCADE_CLASSIFIER_EYE[i])
         feature = classifier.detectMultiScale(
             gray,
-            scaleFactor=EYE_SCALE_FACTOR,
-            minNeighbors=EYE_MIN_NEIGHBORS,
+            scaleFactor=const.EYE_SCALE_FACTOR,
+            minNeighbors=const.EYE_MIN_NEIGHBORS,
             minSize=determineEyeMinSize(faceWidth)
         )
         eyeList.extend(feature)
@@ -135,11 +104,11 @@ testRandomImage()
         removed when we interface with the webcam.
 """
 def testRandomImage():
-    lazy = random.choice(LAZY_FLAG)
-    glasses = random.choice(GLASSES_FLAG)
-    dir = random.choice(DIRECTION_FLAG)
+    lazy = random.choice(const.LAZY_FLAG)
+    glasses = random.choice(const.GLASSES_FLAG)
+    dir = random.choice(const.DIRECTION_FLAG)
     imgName = glasses + '_' + lazy + '_' + dir + '.jpg'
-    findFaceAndEyes(IMAGE_PATH, imgName)
+    findFaceAndEyes(const.IMAGE_PATH, imgName)
     cv2.waitKey(0)
     destroyKresge()
 
@@ -150,11 +119,11 @@ testEveryImage()
         removed when we interface with the webcam.
 """
 def testEveryImage():
-    for glasses in GLASSES_FLAG:
-        for lazy in LAZY_FLAG:
-            for dir in DIRECTION_FLAG:
+    for glasses in const.GLASSES_FLAG:
+        for lazy in const.LAZY_FLAG:
+            for dir in const.DIRECTION_FLAG:
                 imgName = glasses + '_' + lazy + '_' + dir + '.jpg'
-                findFaceAndEyes(IMAGE_PATH, imgName)
+                findFaceAndEyes(const.IMAGE_PATH, imgName)
                 cv2.waitKey(0)
                 destroyKresge()
 
@@ -172,7 +141,7 @@ determineEyeMinSize()
 [ret]   Tuple containing the minimum size of the eye box.
 """
 def determineEyeMinSize(faceWidth):
-    minSize = faceWidth / FACE_TO_EYE_RATIO
+    minSize = faceWidth / const.FACE_TO_EYE_RATIO
     return (minSize, minSize)
 
 

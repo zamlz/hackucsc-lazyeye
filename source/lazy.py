@@ -26,7 +26,6 @@ class SystemTrayIcon(QtWidgets.QSystemTrayIcon):
 
 
 
-
 def main():
     app = QtWidgets.QApplication(sys.argv)
     style = app.style()
