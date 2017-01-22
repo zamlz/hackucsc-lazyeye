@@ -1,8 +1,7 @@
 import sys
-import find_face
+import live_vid
 import const
-from PyQt5 import QtCore, QtGui, QtWidgets
-
+from PyQt5 import QtGui, QtWidgets
 
 #######################
 # SystemTrayIcon Class
@@ -43,6 +42,22 @@ class SystemTrayIcon(QtWidgets.QSystemTrayIcon):
             icon = QtGui.QIcon(QtGui.QPixmap(const.TRAY_ICON[self.cameraState]))
             self.setIcon(icon)
 
+            # Toggle webcam
+            if self.cameraState == const.CAMERA_INACTIVE:
+                const.disableCamera = True
+                self.showMessage(const.TEAM_NAME,
+                                 const.TOGGLE_MESSAGE[self.cameraState],
+                                 QtWidgets.QSystemTrayIcon.Information,
+                                 const.TOGGLE_MESSAGE_TIME)
+            else:
+                const.disableCamera = False
+                self.showMessage(const.TEAM_NAME,
+                                 const.TOGGLE_MESSAGE[self.cameraState],
+                                 QtWidgets.QSystemTrayIcon.Information,
+                                 const.TOGGLE_MESSAGE_TIME)
+                live_vid.main()
+
+
 
     """
     fireAlertMessage()
@@ -50,10 +65,10 @@ class SystemTrayIcon(QtWidgets.QSystemTrayIcon):
 
     [time] Millisecs of the alert bubble.
     """
-    def fireAlertMessage(self, time):
+    def fireAlertMessage(self, msg, time):
         if self.supportsMessages():
             self.showMessage(const.ALERT_TITLE,
-                             const.ALERT_MESSAGE,
+                             const.ALERT_MESSAGE[msg],
                              QtWidgets.QSystemTrayIcon.Information,
                              time)
 
@@ -63,12 +78,12 @@ class SystemTrayIcon(QtWidgets.QSystemTrayIcon):
 #######################
 def main():
     app = QtWidgets.QApplication(sys.argv)
-    style = app.style()
     icon = QtGui.QIcon(QtGui.QPixmap(const.TRAY_ICON[const.CAMERA_ACTIVE]))
     trayIcon = SystemTrayIcon(icon)
+    const.systemTrayIcon = trayIcon
     trayIcon.activated.connect(trayIcon.toggle)
     trayIcon.show()
-    find_face.main()
+    live_vid.main()
     sys.exit(app.exec_())
 
 
