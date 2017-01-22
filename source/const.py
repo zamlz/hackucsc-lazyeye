@@ -24,10 +24,10 @@ ALERT_MESSAGE = "Your lazy eye is acting up!"
 # Feature Detection
 #######################
 # Image Sources
-IMAGE_PATH = '../test_data/data_set/'
-LAZY_FLAG = ['noLazy', 'yesLazy']
-GLASSES_FLAG = ['noGlasses', 'yesGlasses']
-DIRECTION_FLAG = ['up', 'down', 'left', 'right', 'straight']
+IMAGE_PATH = '../test_data/new_set/'
+LAZY_FLAG = ['lazy0', 'lazy1', 'lazy2']
+GLASSES_FLAG = ['noGlasses']
+DIRECTION_FLAG = ['left', 'right', 'straight']
 
 # Classifiers
 # These are currently all provided by opencv
