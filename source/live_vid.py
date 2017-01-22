@@ -13,10 +13,17 @@ CASCADE_CLASSIFIER_EYE = 'haarcascades/haarcascade_eye.xml'
 VK_MEDIA_PLAY_PAUSE = 0xB3
 hwcode = win32api.MapVirtualKey(VK_MEDIA_PLAY_PAUSE,0)
 
+# Camera is set to 0. This is the default camera it looks at.
+# We should reference a setting file for this, but we will handle
+# that later
 CAMERA = 0
 BUFFER = deque([])
 BUFFER_SIZE = 30
-BUFFER_THRESH_PERCENT = 50
+
+# State Machine Variables
+STATE_LOCKED = False
+STATE_LOW_THRESH = 25
+STATE_HIGH_THRESH = 45
 
 for i in xrange(BUFFER_SIZE):
     BUFFER.append(1)
