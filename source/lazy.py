@@ -3,7 +3,18 @@ import find_face
 import const
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+
+#######################
+# SystemTrayIcon Class
+#######################
 class SystemTrayIcon(QtWidgets.QSystemTrayIcon):
+    """
+    SystemTrayIcon Constructor
+    [desc]  Constructor for the SystemTrayIcon class
+
+    [icon] Icon for the system tray.
+    [parent] Parent for the system tray.
+    """
     def __init__(self, icon, parent=None):
         QtWidgets.QSystemTrayIcon.__init__(self, icon, parent)
 
@@ -17,15 +28,25 @@ class SystemTrayIcon(QtWidgets.QSystemTrayIcon):
         self.setContextMenu(self.menu)
 
 
-    def toggle(self):
-        # Toggle camera state and switch icon and tooltip
-        self.cameraState = (self.cameraState + 1) % 2
-        self.setToolTip(const.TRAY_TOOLTIP[self.cameraState])
-        icon = QtGui.QIcon(QtGui.QPixmap(const.TRAY_ICON[self.cameraState]))
-        self.setIcon(icon)
+    """
+    toggle()
+    [desc]  Toggle the system tray icon to do the current
+            primary task assigned (toggle lazy eye guard).
+
+    [reason] Toggle event flag.
+    """
+    def toggle(self, reason):
+        if reason == QtWidgets.QSystemTrayIcon.Trigger:
+            # Toggle camera state and switch icon and tooltip
+            self.cameraState = (self.cameraState + 1) % 2
+            self.setToolTip(const.TRAY_TOOLTIP[self.cameraState])
+            icon = QtGui.QIcon(QtGui.QPixmap(const.TRAY_ICON[self.cameraState]))
+            self.setIcon(icon)
 
 
-
+#######################
+# Main Function
+#######################
 def main():
     app = QtWidgets.QApplication(sys.argv)
     style = app.style()
