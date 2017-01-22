@@ -15,7 +15,7 @@ def testRandomImage():
     lazy = random.choice(const.LAZY_FLAG)
     glasses = random.choice(const.GLASSES_FLAG)
     dir = random.choice(const.DIRECTION_FLAG)
-    imgName = glasses + '_' + lazy + '_' + dir + '.jpg'
+    imgName = glasses + '_' + dir + '_' + lazy + '.jpg'
     find_face.findFaceAndEyes(const.IMAGE_PATH, imgName)
     cv2.waitKey(0)
     find_face.destroyKresge()
@@ -28,9 +28,9 @@ testEveryImage()
 """
 def testEveryImage():
     for glasses in const.GLASSES_FLAG:
-        for lazy in const.LAZY_FLAG:
-            for dir in const.DIRECTION_FLAG:
-                imgName = glasses + '_' + lazy + '_' + dir + '.jpg'
+        for dir in const.DIRECTION_FLAG:
+            for lazy in const.LAZY_FLAG:
+                imgName = glasses + '_' + dir + '_' + lazy + '.jpg'
                 find_face.findFaceAndEyes(const.IMAGE_PATH, imgName)
                 cv2.waitKey(0)
                 find_face.destroyKresge()
