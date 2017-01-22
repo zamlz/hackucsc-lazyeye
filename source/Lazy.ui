@@ -38,42 +38,32 @@
    <bool>false</bool>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="off_button">
+   <widget class="QLabel" name="text_label">
     <property name="geometry">
      <rect>
-      <x>78</x>
-      <y>200</y>
-      <width>113</width>
-      <height>32</height>
+      <x>10</x>
+      <y>150</y>
+      <width>251</width>
+      <height>111</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Off</string>
-    </property>
-    <property name="autoDefault">
-     <bool>false</bool>
-    </property>
-    <property name="default">
-     <bool>false</bool>
-    </property>
-    <property name="flat">
-     <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>60</x>
-      <y>30</y>
-      <width>141</width>
-      <height>71</height>
-     </rect>
+    <property name="font">
+     <font>
+      <family>Calibri</family>
+      <pointsize>17</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
     </property>
     <property name="autoFillBackground">
-     <bool>true</bool>
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgba(255, 255, 255, 0);
+color: rgb(200, 200, 200);</string>
     </property>
     <property name="text">
-     <string>Lazy Eye Software Description</string>
+     <string>Leave this program running while watching videos to train your lazy eye ;)</string>
     </property>
     <property name="textFormat">
      <enum>Qt::AutoText</enum>
@@ -85,85 +75,106 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="on_button">
+   <widget class="QWidget" name="bg_color" native="true">
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>140</y>
-      <width>113</width>
-      <height>32</height>
+      <x>0</x>
+      <y>-1</y>
+      <width>271</width>
+      <height>421</height>
      </rect>
     </property>
-    <property name="text">
-     <string>On</string>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+      <horstretch>0</horstretch>
+      <verstretch>10</verstretch>
+     </sizepolicy>
     </property>
-    <property name="autoDefault">
+    <property name="font">
+     <font>
+      <pointsize>15</pointsize>
+     </font>
+    </property>
+    <property name="autoFillBackground">
      <bool>false</bool>
     </property>
-    <property name="default">
-     <bool>false</bool>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(59, 59, 59);</string>
     </property>
-    <property name="flat">
-     <bool>false</bool>
-    </property>
+    <widget class="QFrame" name="logo_frame">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>20</y>
+       <width>151</width>
+       <height>141</height>
+      </rect>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="on_off_button">
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>350</y>
+       <width>81</width>
+       <height>32</height>
+      </rect>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="baseSize">
+      <size>
+       <width>100</width>
+       <height>100</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <family>Calibri</family>
+       <pointsize>20</pointsize>
+       <weight>50</weight>
+       <italic>false</italic>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(60, 205, 235);</string>
+     </property>
+     <property name="text">
+      <string>On</string>
+     </property>
+     <property name="autoDefault">
+      <bool>false</bool>
+     </property>
+     <property name="default">
+      <bool>false</bool>
+     </property>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
+    </widget>
    </widget>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>270</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menuLazy_Eye">
-    <property name="title">
-     <string>Lazy Eye</string>
-    </property>
-   </widget>
-   <addaction name="menuLazy_Eye"/>
+   <zorder>bg_color</zorder>
+   <zorder>text_label</zorder>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
  <connections>
   <connection>
-   <sender>off_button</sender>
+   <sender>on_off_button</sender>
    <signal>pressed()</signal>
-   <receiver>on_button</receiver>
-   <slot>show()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>126</x>
-     <y>57</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>136</x>
-     <y>177</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>off_button</sender>
-   <signal>pressed()</signal>
-   <receiver>off_button</receiver>
-   <slot>hide()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>134</x>
-     <y>237</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>134</x>
-     <y>237</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>on_button</sender>
-   <signal>pressed()</signal>
-   <receiver>on_button</receiver>
+   <receiver>on_off_button</receiver>
    <slot>hide()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -173,22 +184,6 @@
     <hint type="destinationlabel">
      <x>136</x>
      <y>177</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>on_button</sender>
-   <signal>pressed()</signal>
-   <receiver>off_button</receiver>
-   <slot>show()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>136</x>
-     <y>177</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>134</x>
-     <y>237</y>
     </hint>
    </hints>
   </connection>
