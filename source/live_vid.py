@@ -1,12 +1,17 @@
 import cv2
 import time
 import find_face as ff
+import platform
+import win32api
 from collections import deque
-
 
 # Classifiers
 CASCADE_CLASSIFIER_FACE = 'haarcascades/haarcascade_frontalface_default.xml'
 CASCADE_CLASSIFIER_EYE = 'haarcascades/haarcascade_eye.xml'
+
+#Neccesary vars
+VK_MEDIA_PLAY_PAUSE = 0xB3
+hwcode = win32api.MapVirtualKey(VK_MEDIA_PLAY_PAUSE,0)
 
 CAMERA = 0
 BUFFER = deque([])
@@ -44,6 +49,11 @@ def startWebcamService():
         cv2.destroyAllWindows()
         exit(0)      
                 
+def toggleMedia(state):
+     if os is 'Windows':
+         if state is true:
+            win32api.keybd_event(VK_MEDIA_PLAY_PAUSE, hwcode)
+
 
 
 def averageBuffer(isLazy):
