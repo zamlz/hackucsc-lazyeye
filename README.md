@@ -30,4 +30,24 @@ You can add this command to a shortcut in Windows if you don't want to type it e
 
 ## Usage
 Once you launch lazy.py there will be a taskbar icon that will be used to start and pause the program. Once it is started a window will popup and your webcam will be started. In the window it will show your webcam's stream with the tracking boxes around your eyes with a vertical line tracking your pupils.  You can now start your media player, and minimize the webcam window.  When using, you will need to look directly at the webcam, and if one of your eyes go lazy the media player will pause and send you an alert.  It will resume once you bring your eyes back into focus.  To quit the program, right click on the taskbar and click exit.  
+
 ## Develop
+### Windows
+The Dev Environment we use is Anaconda version 4.2.0 using python 2.7. After you have setup Anaconda, download OpenCV version 3.2 from their website. Their executable will extract the files to a location of your choice. We need Anaconda to recongize these library files, so work your way to the following directory based on your system architecture
+```
+${OPENCV_INSTALL_DIR}\build\python\2.7\x84
+${OPENCV_INSTALL_DIR}\build\python\2.7\x64
+```
+
+Copy the cv2.pyd file that is found here to the following directory
+```
+${ANACONDA_INSTALL_DIR}\Lib\site-packages
+```
+
+Next make sure your path has this new directory added to it.
+```
+${OPENCV_INSTALL_DIR}\build\x86\vc12\bin
+${OPENCV_INSTALL_DIR}\build\x64\vc12\bin
+```
+
+
