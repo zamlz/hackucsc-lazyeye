@@ -54,12 +54,13 @@ def findFaceAndEyesCore(img):
     faces = findFaces(gray)
 
     # Find the eyes in each face
-    for (x, y, w, h) in faces:
+    for face in faces:
+        x, y, w, h = face
         cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 0), 2)
         faceGrayed = gray[y:y + h, x:x + w]
         faceColored = img[y:y + h, x:x + w]
-        
-        leftEye, rightEye = findEyes(w, faceGrayed, faceColored)
+
+        leftEye, rightEye = findEyes(face, faceGrayed, faceColored)
         if leftEye is None:
             continue
 
@@ -120,31 +121,34 @@ findEyes()
         the eyes. If no eyes are detected within the face,
         it returns a tuple of Nones.
 """
-def findEyes(faceWidth, gray, color):
+
+
+def findEyes(face, gray, color):
+    x, y, w, h = face
     eyeList = []
 
     # Run Haar Cascades for eye detection
     for i in range(len(const.CASCADE_CLASSIFIER_EYE)):
         classifier = cv2.CascadeClassifier(const.CASCADE_PATH + const.CASCADE_CLASSIFIER_EYE[i])
-        feature = classifier.detectMultiScale(
+        features = classifier.detectMultiScale(
             gray,
             scaleFactor=const.EYE_SCALE_FACTOR,
             minNeighbors=const.EYE_MIN_NEIGHBORS,
-            minSize=determineEyeMinSize(faceWidth)
+            minSize=determineEyeMinSize(w)
         )
-        eyeList.extend(feature)
-        # Outline box
-        # for (ex, ey, ew, eh) in feature:
-        # cv2.rectangle(color, (ex, ey), (ex + ew, ey + eh), CASCADE_BOX_COLOR[i], 2)
+        for box in features:
+            bx, by, bw, bh = box
+            if by < h * const.FACE_IGNORE_LINE:
+                eyeList.append(box)
+                # Outline box
+                # for (ex, ey, ew, eh) in feature:
+                # cv2.rectangle(color, (ex, ey), (ex + ew, ey + eh), CASCADE_BOX_COLOR[i], 2)
 
     if len(eyeList) < 2:
         return None, None
 
     # Find the midline of all detected eye boxes
     midline = findFaceMidline(eyeList)
-
-    if midline is None:
-        return None, None
 
     # Average eye boxes for both eyes
     eyeL, eyeR = averageEyeBoxes(eyeList, midline)
