@@ -115,7 +115,7 @@ guessPupilLocation()
 """
 def guessPupilLocation(maxPoints,midLineIndex):
     minPt = 0  
-    minOffset = float("inf")
+    minOffset = float(200)
     for pt in maxPoints:
         if (abs(pt - midLineIndex) < abs(minOffset)):
             minOffset = pt - midLineIndex

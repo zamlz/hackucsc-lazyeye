@@ -21,7 +21,6 @@ BUFFER = deque([])
 BUFFER_SIZE = 30
 
 # State Machine Variables
-STATE_LOCKED = False
 STATE_LOW_THRESH = 25
 STATE_HIGH_THRESH = 45
 
@@ -29,12 +28,14 @@ for i in xrange(BUFFER_SIZE):
     BUFFER.append(1)
 
 def startWebcamService():
+    STATE_LOCKED = False
     while(True):
         cap = cv2.VideoCapture(CAMERA)
         ret, frame = cap.read()
         startFrame = 1
         endFrame = 5
         count = 0
+        isLazy = False
         
         while cap.isOpened():
             success, frame = cap.read()
@@ -42,7 +43,7 @@ def startWebcamService():
             if success and endFrame > count > startFrame:
                 count+=1
                 frame, isLazy = ff.findFaceAndEyesWebcam(frame)
-                averageBuffer(isLazy)
+                STATE_LOCKED = averageBuffer(isLazy, STATE_LOCKED)
                 cv2.imshow('frame', frame)
                 if(count is endFrame):
                     count = 0
@@ -56,14 +57,13 @@ def startWebcamService():
         cv2.destroyAllWindows()
         exit(0)      
                 
-def toggleMedia(state):
-     if os is 'Windows':
-         if state is true:
-            win32api.keybd_event(VK_MEDIA_PLAY_PAUSE, hwcode)
+def toggleMedia():
+    print "Toggled"
+    win32api.keybd_event(VK_MEDIA_PLAY_PAUSE, hwcode)
 
 
 
-def averageBuffer(isLazy):
+def averageBuffer(isLazy, STATE_LOCKED):
     BUFFER.popleft()
     if(isLazy):
         BUFFER.append(0)
@@ -72,9 +72,19 @@ def averageBuffer(isLazy):
     avg = 0
     for buf in BUFFER:
         avg += buf
-    print 100*float(avg)/BUFFER_SIZE, "%"
+    avg =  100*float(avg)/BUFFER_SIZE
+    print avg,"%"
+    return stateMachine(avg, STATE_LOCKED)
 
 
+def stateMachine(percent, STATE_LOCKED):
+    if (percent < STATE_LOW_THRESH and STATE_LOCKED is False):
+        STATE_LOCKED = True
+        toggleMedia()
+    if (percent > STATE_HIGH_THRESH and STATE_LOCKED is True):
+        STATE_LOCKED = False
+        toggleMedia()
+    return STATE_LOCKED
 
 
 """
@@ -88,7 +98,6 @@ def trackFromWebcam():
         startFrame = 10
         endFrame = 15
         count = 0
-        isLazy = False
 
         while cap.isOpened():
             success, frame = cap.read()
