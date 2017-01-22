@@ -1,7 +1,6 @@
 #######################
 # Tray Constants
 #######################
-
 # Tray Constants
 TRAY_ICON = [
     "images/logo_tray_inactive.png",
@@ -16,10 +15,14 @@ TRAY_TOOLTIP = [
 CAMERA_INACTIVE = 0
 CAMERA_ACTIVE = 1
 
+# Alert Messages
+ALERT_TITLE = "Lazy Eye Watchdog"
+ALERT_MESSAGE = "Your lazy eye is acting up!"
+
+
 #######################
 # Feature Detection
 #######################
-
 # Image Sources
 IMAGE_PATH = '../test_data/data_set/'
 LAZY_FLAG = ['noLazy', 'yesLazy']

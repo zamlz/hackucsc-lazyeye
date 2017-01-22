@@ -44,6 +44,20 @@ class SystemTrayIcon(QtWidgets.QSystemTrayIcon):
             self.setIcon(icon)
 
 
+    """
+    fireAlertMessage()
+    [desc]  Fire the default lazy eye alert message.
+
+    [time] Millisecs of the alert bubble.
+    """
+    def fireAlertMessage(self, time):
+        if self.supportsMessages():
+            self.showMessage(const.ALERT_TITLE,
+                             const.ALERT_MESSAGE,
+                             QtWidgets.QSystemTrayIcon.Information,
+                             time)
+
+
 #######################
 # Main Function
 #######################
