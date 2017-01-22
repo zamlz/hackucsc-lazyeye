@@ -22,12 +22,12 @@ class Ui_LazyEye(object):
         LazyEye.setAutoFillBackground(False)
         self.centralwidget = QtWidgets.QWidget(LazyEye)
         self.centralwidget.setObjectName("centralwidget")
-        self.off_button = QtWidgets.QPushButton(self.centralwidget)
-        self.off_button.setGeometry(QtCore.QRect(78, 200, 113, 32))
-        self.off_button.setAutoDefault(False)
-        self.off_button.setDefault(False)
-        self.off_button.setFlat(False)
-        self.off_button.setObjectName("off_button")
+        self.quit_button = QtWidgets.QPushButton(self.centralwidget)
+        self.quit_button.setGeometry(QtCore.QRect(78, 200, 113, 32))
+        self.quit_button.setAutoDefault(False)
+        self.quit_button.setDefault(False)
+        self.quit_button.setFlat(False)
+        self.quit_button.setObjectName("quit_button")
         self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setGeometry(QtCore.QRect(60, 30, 141, 71))
         self.label.setAutoFillBackground(True)
@@ -54,21 +54,39 @@ class Ui_LazyEye(object):
         self.menubar.addAction(self.menuLazy_Eye.menuAction())
 
         self.retranslateUi(LazyEye)
-        self.off_button.pressed.connect(self.on_button.show)
-        self.off_button.pressed.connect(self.off_button.hide)
+        self.quit_button.pressed.connect(self.exit)
+        self.quit_button.pressed.connect(self.quit_button.hide)
         self.on_button.pressed.connect(self.pressOnButton)
         QtCore.QMetaObject.connectSlotsByName(LazyEye)
 
     def retranslateUi(self, LazyEye):
         _translate = QtCore.QCoreApplication.translate
         LazyEye.setWindowTitle(_translate("LazyEye", "Lazy Eye"))
-        self.off_button.setText(_translate("LazyEye", "Off"))
+        self.quit_button.setText(_translate("LazyEye", "Quit"))
         self.label.setText(_translate("LazyEye", "Lazy Eye Software Description"))
         self.on_button.setText(_translate("LazyEye", "On"))
         self.menuLazy_Eye.setTitle(_translate("LazyEye", "Lazy Eye"))
 
-    def pressOnButton():
-        if self.on_button.text == "On":
-            self.on_button.setText(_translate("LazyEye", "Off"))
+    def pressOnButton(self):
+        if self.on_button.text() == "On":
+            self.on_button.setText("Off")
         else:
-            self.on_button.setText(_translate("LazyEye","On"))
+            self.on_button.setText("On")
+
+    def exit(self):
+        import sys
+        sys.exit()
+
+
+if __name__ == '__main__':
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    LazyEye = QtWidgets.QMainWindow()
+    ui = Ui_LazyEye()
+    ui.setupUi(LazyEye)
+    LazyEye.show()
+    sys.exit(app.exec_())
+
+
+
+
