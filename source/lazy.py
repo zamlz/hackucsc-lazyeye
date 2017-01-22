@@ -1,7 +1,7 @@
 import sys
 import live_vid
 import const
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtGui, QtWidgets
 
 #######################
 # SystemTrayIcon Class
@@ -58,6 +58,7 @@ class SystemTrayIcon(QtWidgets.QSystemTrayIcon):
                 live_vid.main()
 
 
+
     """
     fireAlertMessage()
     [desc]  Fire the default lazy eye alert message.
@@ -77,7 +78,6 @@ class SystemTrayIcon(QtWidgets.QSystemTrayIcon):
 #######################
 def main():
     app = QtWidgets.QApplication(sys.argv)
-    style = app.style()
     icon = QtGui.QIcon(QtGui.QPixmap(const.TRAY_ICON[const.CAMERA_ACTIVE]))
     trayIcon = SystemTrayIcon(icon)
     const.systemTrayIcon = trayIcon

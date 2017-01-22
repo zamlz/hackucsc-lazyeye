@@ -21,12 +21,12 @@ def startWebcamService():
                 count+=1
                 frame, isLazy = ff.findFaceAndEyesWebcam(frame)
                 averageBuffer(isLazy)
-                cv2.imshow('frame', frame)
+                cv2.imshow(const.TEAM_NAME, frame)
                 if(count is endFrame):
                     count = 0
             else:
                 if success:
-                    cv2.imshow('frame', frame)
+                    cv2.imshow(const.TEAM_NAME, frame)
                     count += 1
             if cv2.waitKey(1) & const.disableCamera:
                 break

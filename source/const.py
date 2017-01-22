@@ -1,6 +1,10 @@
 from collections import deque
 import win32api
 
+# Team Info
+TEAM_NAME = "Who's Lazy? Not Eye."
+TEAM_LOGO = "images/logo_512.png",
+
 #######################
 # Tray Constants
 #######################
@@ -30,7 +34,6 @@ LAZY_EYE_ALERT_TIME = 10000
 LAZY_EYE_FIX_TIME = 2500
 
 # Toggle Notification
-TEAM_NAME = "Who's Lazy? Not Eye."
 TOGGLE_MESSAGE_TIME = 1000
 TOGGLE_MESSAGE = [
     "Lazy Eye Watchdog disabled.",
@@ -91,6 +94,7 @@ BUFFER_SIZE = 30
 # State Machine Variables
 STATE_LOW_THRESH = 25
 STATE_HIGH_THRESH = 45
+
 
 #######################
 # Globals
