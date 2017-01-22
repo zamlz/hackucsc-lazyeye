@@ -10,8 +10,8 @@ import cv2
 #from config import config -------------------------- CRAL
 
 kGradientThreshold = 10.0
-kWeightBlurSize = 5;
-maxEyeSize=8;
+kWeightBlurSize = 5
+maxEyeSize=8
 
 def computeGradient(img):
     out = np.zeros((img.shape[0],img.shape[1]),dtype=np.float32) #create a receiver array
@@ -30,7 +30,7 @@ def computeGradient(img):
 def testPossibleCentersFormula(x, y, weight, gx, gy, out):
     for cy in xrange(0,out.shape[0]):
         for cx in xrange(0,out.shape[1]):
-            if x==cx and y==cy :
+            if x==cx and y==cy:
                 continue
             dx= x-cx
             dy= y-cy
@@ -44,20 +44,17 @@ def testPossibleCentersFormula(x, y, weight, gx, gy, out):
 
 
 
-def findEyeCenter(eyeImage, offset):
-    eyeImg = cv2.cvtColor(eyeImage, cv2.COLOR_BGR2GRAY)
+def findEyeCenter(eyeImg):
     eyeImg = eyeImg.astype(np.float32)
-    scaleValue=1.0;
-    if(eyeImg.shape[0]>maxEyeSize or eyeImg.shape[0]>maxEyeSize ):
+    scaleValue=1.0
+    if(eyeImg.shape[0]>maxEyeSize or eyeImg.shape[1]>maxEyeSize ):
         scaleValue=max(maxEyeSize/float(eyeImg.shape[0]),maxEyeSize/float(eyeImg.shape[1]))
         eyeImg=cv2.resize(eyeImg,None, fx=scaleValue,fy= scaleValue, interpolation = cv2.INTER_AREA)
-
-
 
     gradientX= computeGradient(eyeImg)
     gradientY= np.transpose(computeGradient(np.transpose(eyeImg)))
     gradientMatrix=matrixMagnitude(gradientX, gradientY)
-
+        
     gradientThreshold=computeDynamicThreshold(gradientMatrix,kGradientThreshold)
     #Normalisation
     for y in xrange(0,eyeImg.shape[0]):  #Iterate through rows
@@ -83,14 +80,12 @@ def findEyeCenter(eyeImage, offset):
             testPossibleCentersFormula(x, y, weight, gradientX[y][x], gradientY[y][x], outSum)
 
     #scale all the values down, basically averaging them
-    numGradients = (weight.shape[0]*weight.shape[1]);
+    numGradients = (weight.shape[0]*weight.shape[1])
     out= np.divide(outSum, numGradients*10)
-    if config.gui:
-        cv2.imshow("eyeGradient", out)
     #find maxPoint
     (minval, maxval,mincoord,maxcoord) = cv2.minMaxLoc(out)
-    maxcoord=(int(maxcoord[0]/scaleValue),int(maxcoord[1]/scaleValue))
-    return tuple(map(operator.add, maxcoord, offset))
+    maxcoord=(int(maxcoord[0]),int(maxcoord[1]))
+    return (int(maxcoord[0]/scaleValue), int(maxcoord[1]/scaleValue))
 
 
 

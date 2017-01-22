@@ -1,5 +1,6 @@
 import cv2
 import random
+import eyeTrack
 
 # Image Sources
 IMAGE_PATH = '../test_data/data_set/'
@@ -58,6 +59,19 @@ def findFaceAndEyes(imgPath, imgName):
         faceColored = img[y:y + h, x:x + w]
         leftEye, rightEye = findEyes(w, faceGrayed, faceColored)
 
+        ex, ey, ew, eh = leftEye
+        leftEyeGrayed = faceGrayed[ey:ey+eh, ex:ex+ew]
+        leftEyeColored = faceColored[ey:ey+eh, ex:ex+ew]
+        leftPupil = eyeTrack.findEyeCenter(leftEyeGrayed)
+        cv2.circle(leftEyeColored, leftPupil, 3, (0,0,255), -1)
+
+        ex, ey, ew, eh = rightEye
+        rightEyeGrayed = faceGrayed[ey:ey + eh, ex:ex + ew]
+        rightEyeColored = faceColored[ey:ey + eh, ex:ex + ew]
+        rightPupil = eyeTrack.findEyeCenter(rightEyeGrayed)
+        cv2.circle(rightEyeColored, rightPupil, 3, (0, 0, 255), -1)
+
+
     # Display the image
     cv2.imshow(imgName,img)
 
@@ -114,6 +128,18 @@ def findEyes(faceWidth, gray, color):
 
     # Average eye boxes for both eyes
     eyeL, eyeR = averageEyeBoxes(eyeList, midline)
+
+    # Cut off excess of eye boxes
+    # 10% off width both sides
+    # 30% off top, 20% off  bottom
+    eyeL[0] += eyeL[2]/10 * 1
+    eyeR[0] += eyeR[2]/10 * 1
+    eyeL[1] += eyeL[3]/10 * 3
+    eyeR[1] += eyeR[3]/10 * 3
+    eyeL[2] -= eyeL[2]/10 * 2
+    eyeR[2] -= eyeR[2]/10 * 2
+    eyeL[3] -= eyeL[3]/10 * 5
+    eyeR[3] -= eyeR[3]/10 * 5
 
     # Outline averaged eyes
     cv2.rectangle(color, (eyeL[0], eyeL[1]), (eyeL[0] + eyeL[2], eyeL[1] + eyeL[2]), (255, 255, 255), 2)
