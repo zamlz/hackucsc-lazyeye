@@ -49,5 +49,6 @@ Next make sure your path has this new directory added to it.
 ${OPENCV_INSTALL_DIR}\build\x86\vc12\bin
 ${OPENCV_INSTALL_DIR}\build\x64\vc12\bin
 ```
-
+### Linux
+Download Anaconda version 4.2.0 from the [Anaconda website](https://www.continuum.io/downloads) and follow the install instructions. Then do conda install opencv in the terminal or download opencv from the [OpenCV website](http://opencv.org/downloads.html) and follow the install instructions.
 
