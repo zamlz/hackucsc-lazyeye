@@ -6,7 +6,9 @@ class SystemTrayIcon(QtWidgets.QSystemTrayIcon):
         QtWidgets.QSystemTrayIcon.__init__(self, icon, parent)
         self.menu = QtWidgets.QMenu(parent)
         exitAction = self.menu.addAction("Exit")
+        exitAction.triggered.connect(sys.exit)
         self.setContextMenu(self.menu)
+        
 
 def main():
     app = QtWidgets.QApplication(sys.argv)
