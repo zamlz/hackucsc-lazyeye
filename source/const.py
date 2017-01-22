@@ -29,6 +29,14 @@ LAZY_EYE_FIXED = 1
 LAZY_EYE_ALERT_TIME = 10000
 LAZY_EYE_FIX_TIME = 2500
 
+# Toggle Notification
+TEAM_NAME = "Who's Lazy? Not Eye."
+TOGGLE_MESSAGE_TIME = 1000
+TOGGLE_MESSAGE = [
+    "Lazy Eye Watchdog disabled.",
+    "Lazy Eye Watchdog enabled."
+]
+
 
 #######################
 # Feature Detection

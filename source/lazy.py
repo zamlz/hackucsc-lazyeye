@@ -45,8 +45,16 @@ class SystemTrayIcon(QtWidgets.QSystemTrayIcon):
             # Toggle webcam
             if self.cameraState == const.CAMERA_INACTIVE:
                 const.disableCamera = True
+                self.showMessage(const.TEAM_NAME,
+                                 const.TOGGLE_MESSAGE[self.cameraState],
+                                 QtWidgets.QSystemTrayIcon.Information,
+                                 const.TOGGLE_MESSAGE_TIME)
             else:
                 const.disableCamera = False
+                self.showMessage(const.TEAM_NAME,
+                                 const.TOGGLE_MESSAGE[self.cameraState],
+                                 QtWidgets.QSystemTrayIcon.Information,
+                                 const.TOGGLE_MESSAGE_TIME)
                 live_vid.main()
 
 
