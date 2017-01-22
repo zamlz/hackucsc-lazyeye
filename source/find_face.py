@@ -1,5 +1,4 @@
 import cv2
-import random
 import const
 import eye_ml as eml
 
@@ -170,39 +169,6 @@ def findEyes(face, gray, color):
     )
 
 
-#######################
-# Tester Functions
-#######################
-"""
-testRandomImage()
-[desc]  Tests a random image from the sample set. Will be
-        removed when we interface with the webcam.
-"""
-def testRandomImage():
-    lazy = random.choice(const.LAZY_FLAG)
-    glasses = random.choice(const.GLASSES_FLAG)
-    dir = random.choice(const.DIRECTION_FLAG)
-    imgName = glasses + '_' + lazy + '_' + dir + '.jpg'
-    findFaceAndEyes(const.IMAGE_PATH, imgName)
-    cv2.waitKey(0)
-    destroyKresge()
-
-
-"""
-testEveryImage()
-[desc]  Tests every image from the sample set. Will be
-        removed when we interface with the webcam.
-"""
-def testEveryImage():
-    for glasses in const.GLASSES_FLAG:
-        for lazy in const.LAZY_FLAG:
-            for dir in const.DIRECTION_FLAG:
-                imgName = glasses + '_' + lazy + '_' + dir + '.jpg'
-                findFaceAndEyes(const.IMAGE_PATH, imgName)
-                cv2.waitKey(0)
-                destroyKresge()
-
-
 
 #######################
 # Utility Functions
@@ -310,8 +276,7 @@ def destroyKresge():
 # Main
 #######################
 def main():
-    testEveryImage()
-
+    pass
 
 if __name__ == '__main__':
     main()
