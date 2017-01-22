@@ -137,14 +137,20 @@ def findEyes(faceWidth, gray, color):
         # for (ex, ey, ew, eh) in feature:
         # cv2.rectangle(color, (ex, ey), (ex + ew, ey + eh), CASCADE_BOX_COLOR[i], 2)
 
-    if len(eyeList) == 0:
+    if len(eyeList) < 2:
         return None, None
 
     # Find the midline of all detected eye boxes
     midline = findFaceMidline(eyeList)
 
+    if midline is None:
+        return None, None
+
     # Average eye boxes for both eyes
     eyeL, eyeR = averageEyeBoxes(eyeList, midline)
+
+    if eyeL is None:
+        return None, None
 
     # Outline averaged eyes
     cv2.rectangle(color, (eyeL[0], eyeL[1]), (eyeL[0] + eyeL[2], eyeL[1] + eyeL[2]), (255, 255, 255), 2)
@@ -275,12 +281,15 @@ def averageEyeBoxes(eyeList, midline):
             for i in range(4):
                 eyeR[i] += eye[i]
 
+    if leftCount == 0 or rightCount == 0:
+        return None, None
+
     # Average lists
     for i in range(4):
         eyeL[i] = eyeL[i] / leftCount
         eyeR[i] = eyeR[i] / rightCount
 
-    return (eyeL, eyeR)
+    return eyeL, eyeR
 
 
 """
