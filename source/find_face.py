@@ -9,7 +9,8 @@ import eye_ml as eml
 IMAGE_PATH = '../test_data/new_set/'
 #LAZY_FLAG = ['noLazy', 'yesLazy']
 LAZY_FLAG = ['lazy0', 'lazy1', 'lazy2']
-GLASSES_FLAG = ['noGlasses', 'yesGlasses']
+#GLASSES_FLAG = ['noGlasses', 'yesGlasses']
+GLASSES_FLAG = ['noGlasses']
 #DIRECTION_FLAG = ['up', 'down', 'left', 'right', 'straight']
 DIRECTION_FLAG = ['left', 'right', 'straight']
 
@@ -46,7 +47,8 @@ FACE_TO_EYE_RATIO = 6
 #######################
 """
 findFaceAndEyes()
-[desc] Detect the faces and eyes within a given image.
+[desc] Load the file from the location specified and
+        and send it to the core function
 
 [imgPath] Path to image
 [imgName] Image name
@@ -55,6 +57,36 @@ findFaceAndEyes()
 """
 def findFaceAndEyes(imgPath, imgName):
     img = cv2.imread(imgPath + imgName)
+    img, _ = findFaceAndEyesCore(img)
+    # Display the image
+    cv2.imshow(imgName,img)
+    
+"""
+findFaceAndEyesWebcam()
+[desc] Get a frame image from the webcam and
+        let the core process it like normal.
+        
+
+[imgPath] Path to image
+[imgName] Image name
+
+[ret]   Path to random image.
+"""
+def findFaceAndEyesWebcam(img):
+    return findFaceAndEyesCore(img)
+    
+
+"""
+findFaceAndEyesCore()
+[desc] Detect the faces and eyes within a given image.
+
+[imgPath] Raw image array
+
+[ret]   Path to random image.
+""" 
+def findFaceAndEyesCore(img):
+    isLazy = False
+    imgOriginal = img[:]
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     # Find the face
@@ -72,7 +104,7 @@ def findFaceAndEyes(imgPath, imgName):
 
         # Pupil Detection
         eyeLocations = packageEyes([leftEye, rightEye], x, y)
-        eyeData = eml.cropEye(eyeLocations, imgPath+imgName)
+        eyeData = eml.cropEye(eyeLocations, imgOriginal)
         isLazy, pupilLoc = eml.isEyeLazy(eyeData)
         
         pupilLeftX = x + leftEye[0] + int(leftEye[2]/2) + int(pupilLoc[0][1])
@@ -80,14 +112,22 @@ def findFaceAndEyes(imgPath, imgName):
         pupilRightX = x + rightEye[0] + int(rightEye[2]/2) + int(pupilLoc[1][1])
         pupilRightY = y + rightEye[1]
 
-        cv2.line(img, ( pupilLeftX, pupilLeftY), (pupilLeftX, pupilLeftY + leftEye[3]), (255,0,0))
-        cv2.line(img, ( pupilRightX, pupilRightY), (pupilRightX, pupilRightY + rightEye[3]), (255,0,0))
-        print isLazy
+        redPot =  255 * float(abs(pupilLoc[0][1] - pupilLoc[1][1]))/(eml.LAZY_DELTA*3)
+        bluePot = 255 * float(eml.LAZY_DELTA*3 - abs(pupilLoc[0][1] - pupilLoc[1][1]))/(eml.LAZY_DELTA*3)
+
+        redPot = min(max(0,redPot),255)
+        bluePot = min(max(0,bluePot),255)
+
+        thick = 3
+        cv2.line(img, ( pupilLeftX, pupilLeftY), (pupilLeftX, pupilLeftY + leftEye[3]), (bluePot,0,redPot), thick)
+        cv2.line(img, ( pupilRightX, pupilRightY), (pupilRightX, pupilRightY + rightEye[3]), (bluePot,0,redPot), thick)
+    
+    if isLazy == None:
+        return img, False
+    return img, isLazy
         
-    # Display the image
-    cv2.imshow(imgName,img)
 
-
+    
 """
 findFaces()
 [desc]  Detect the faces within a given image.

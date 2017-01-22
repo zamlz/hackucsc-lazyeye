@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 
 
 DEBUG_FLAG = False
+LAZY_DELTA = 5
 
 
 """
@@ -45,8 +46,7 @@ def isEyeLazy(eyeImageData):
     
     # Identify what the relative offset is for the pupils and determine
     # if it is within the threshold.
-    delta = 5
-    if (abs(pupilLoc[0][1] - pupilLoc[1][1]) > delta):
+    if (abs(pupilLoc[0][1] - pupilLoc[1][1]) > LAZY_DELTA):
         return True, pupilLoc
     return False, pupilLoc
     
@@ -150,10 +150,10 @@ def findModelMaxMin(model):
     maxPoints = []
     minPoints = []
     for pt in points:
-        if (modelD2(pt) > 0):
-            minPoints.append(pt)
-        elif (modelD2(pt) < 0):
-            maxPoints.append(pt)
+        if (modelD2(pt) > 0 and pt.imag == 0):
+            minPoints.append(pt.real)
+        elif (modelD2(pt) < 0 and pt.imag == 0):
+            maxPoints.append(pt.real)
     return minPoints, maxPoints
                 
 
@@ -170,11 +170,10 @@ cropEye()
 
 [ret]   returns a list of the cropeed eyes.
 """
-def cropEye(cropEyeLoc, imgDirLocation):
-    imgData = cv2.imread(imgDirLocation)
+def cropEye(cropEyeLoc, imgOriginal):
     croppedEyes = []
     for (x1,x2,y1,y2) in cropEyeLoc:
-        croppedEyes.append(imgData[y1:y2, x1:x2])
+        croppedEyes.append(imgOriginal[y1:y2, x1:x2])
     return croppedEyes
 
 
