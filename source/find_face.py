@@ -150,9 +150,6 @@ def findEyes(face, gray, color):
     # Find the midline of all detected eye boxes
     midline = findFaceMidline(eyeList)
 
-    if midline is None:
-        return None, None
-
     # Average eye boxes for both eyes
     eyeL, eyeR = averageEyeBoxes(eyeList, midline)
 
