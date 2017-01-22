@@ -2,7 +2,7 @@ import cv2
 import time
 import find_face as ff
 import platform
-import win32api
+import subprocess
 from collections import deque
 
 # Classifiers
@@ -11,7 +11,9 @@ CASCADE_CLASSIFIER_EYE = 'haarcascades/haarcascade_eye.xml'
 
 #Neccesary vars
 VK_MEDIA_PLAY_PAUSE = 0xB3
-hwcode = win32api.MapVirtualKey(VK_MEDIA_PLAY_PAUSE,0)
+
+#Users OS
+OS = platform.system()
 
 # Camera is set to 0. This is the default camera it looks at.
 # We should reference a setting file for this, but we will handle
@@ -57,10 +59,17 @@ def startWebcamService():
         cv2.destroyAllWindows()
         exit(0)      
                 
-def toggleMedia():
-    print "Toggled"
-    win32api.keybd_event(VK_MEDIA_PLAY_PAUSE, hwcode)
-
+def toggleMedia(state):
+    if OS == 'Windows':
+        import win32api
+        hwcode = win32api.MapVirtualKey(VK_MEDIA_PLAY_PAUSE,0)
+        print "Toggled"
+        win32api.keybd_event(VK_MEDIA_PLAY_PAUSE, hwcode)
+    elif OS == 'Linux':
+        if state == True:
+            subprocess.call(["playerctl", "pause"])
+        else:
+            subprocess.call(["playerctl","play"])
 
 
 def averageBuffer(isLazy, STATE_LOCKED):
@@ -79,11 +88,11 @@ def averageBuffer(isLazy, STATE_LOCKED):
 
 def stateMachine(percent, STATE_LOCKED):
     if (percent < STATE_LOW_THRESH and STATE_LOCKED is False):
+        toggleMedia(STATE_LOCKED)
         STATE_LOCKED = True
-        toggleMedia()
     if (percent > STATE_HIGH_THRESH and STATE_LOCKED is True):
+        toggleMedia(STATE_LOCKED)
         STATE_LOCKED = False
-        toggleMedia()
     return STATE_LOCKED
 
 
