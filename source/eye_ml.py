@@ -25,9 +25,14 @@ def isEyeLazy(eyeImageData):
     for singleEye in eyeImageData:
         h, w, _ = singleEye.shape
         
+        top_pad=0.3
+        bot_pad=0.8
+        left_pad=0.1
+        right_pad=0.9
+        
         # crop the eye images to really get a precision on the eyes and
         # grayscale the image.
-        singleEyeTrim = singleEye[int(h*0.3):int(h*0.8),int(w*0.1):int(w*0.9)]
+        singleEyeTrim = singleEye[int(h*top_pad):int(h*bot_pad),int(w*left_pad):int(w*right_pad)]
         singleEyeGreyScale = createGreyScaleImg(singleEyeTrim)
         
         if (DEBUG_FLAG):
@@ -42,8 +47,8 @@ def isEyeLazy(eyeImageData):
     # if it is within the threshold.
     delta = 5
     if (abs(pupilLoc[0][1] - pupilLoc[1][1]) > delta):
-        return True
-    return False
+        return True, pupilLoc
+    return False, pupilLoc
     
 
     
