@@ -2,7 +2,7 @@ from collections import deque
 import win32api
 
 # Team Info
-TEAM_NAME = "Who's Lazy? Not Eye."
+TEAM_NAME = "Lazy Eye Watchdog."
 TEAM_LOGO = "images/logo_512.png",
 
 #######################

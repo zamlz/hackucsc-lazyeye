@@ -21,7 +21,7 @@ class SystemTrayIcon(QtWidgets.QSystemTrayIcon):
         self.setToolTip(const.TRAY_TOOLTIP[const.CAMERA_ACTIVE])
 
         self.menu = QtWidgets.QMenu(parent)
-        exitAction = self.menu.addAction("Exit")
+        exitAction = self.menu.addAction("Exit    ")
         exitAction.setStatusTip('Exit Application')
         exitAction.triggered.connect(sys.exit)
         self.setContextMenu(self.menu)
