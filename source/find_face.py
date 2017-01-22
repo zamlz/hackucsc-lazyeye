@@ -1,20 +1,53 @@
 import cv2
 import random
 import const
-
+import eye_ml as eml
 
 #######################
 # Feature Detection
 #######################
 """
 findFaceAndEyes()
-[desc] Detect the faces and eyes within a given image.
+[desc] Load the file from the location specified and
+        and send it to the core function
 
 [imgPath] Path to image
 [imgName] Image name
+
+[ret]   Path to random image.
 """
 def findFaceAndEyes(imgPath, imgName):
     img = cv2.imread(imgPath + imgName)
+    img, _ = findFaceAndEyesCore(img)
+    # Display the image
+    cv2.imshow(imgName,img)
+    
+"""
+findFaceAndEyesWebcam()
+[desc] Get a frame image from the webcam and
+        let the core process it like normal.
+        
+
+[imgPath] Path to image
+[imgName] Image name
+
+[ret]   Path to random image.
+"""
+def findFaceAndEyesWebcam(img):
+    return findFaceAndEyesCore(img)
+    
+
+"""
+findFaceAndEyesCore()
+[desc] Detect the faces and eyes within a given image.
+
+[imgPath] Raw image array
+
+[ret]   Path to random image.
+""" 
+def findFaceAndEyesCore(img):
+    isLazy = False
+    imgOriginal = img[:]
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     # Find the face
@@ -25,12 +58,37 @@ def findFaceAndEyes(imgPath, imgName):
         cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 0), 2)
         faceGrayed = gray[y:y + h, x:x + w]
         faceColored = img[y:y + h, x:x + w]
+        
         leftEye, rightEye = findEyes(w, faceGrayed, faceColored)
+        if leftEye is None:
+            continue
 
-    # Display the image
-    cv2.imshow(imgName,img)
+        # Pupil Detection
+        eyeLocations = packageEyes([leftEye, rightEye], x, y)
+        eyeData = eml.cropEye(eyeLocations, imgOriginal)
+        isLazy, pupilLoc = eml.isEyeLazy(eyeData)
+        
+        pupilLeftX = x + leftEye[0] + int(leftEye[2]/2) + int(pupilLoc[0][1])
+        pupilLeftY = y + leftEye[1]
+        pupilRightX = x + rightEye[0] + int(rightEye[2]/2) + int(pupilLoc[1][1])
+        pupilRightY = y + rightEye[1]
 
+        redPot =  255 * float(abs(pupilLoc[0][1] - pupilLoc[1][1]))/(eml.LAZY_DELTA*3)
+        bluePot = 255 * float(eml.LAZY_DELTA*3 - abs(pupilLoc[0][1] - pupilLoc[1][1]))/(eml.LAZY_DELTA*3)
 
+        redPot = min(max(0,redPot),255)
+        bluePot = min(max(0,bluePot),255)
+
+        thick = 3
+        cv2.line(img, ( pupilLeftX, pupilLeftY), (pupilLeftX, pupilLeftY + leftEye[3]), (bluePot,0,redPot), thick)
+        cv2.line(img, ( pupilRightX, pupilRightY), (pupilRightX, pupilRightY + rightEye[3]), (bluePot,0,redPot), thick)
+    
+    if isLazy == None:
+        return img, False
+    return img, isLazy
+        
+
+    
 """
 findFaces()
 [desc]  Detect the faces within a given image.
@@ -50,7 +108,7 @@ def findFaces(gray):
 
 
 """
-findFaces()
+findEyes()
 [desc]  Detect the eyes within a given face. Averages
         several cascade classifiers to find the eye box.
 
@@ -59,7 +117,8 @@ findFaces()
 [color] Color version of the image/
 
 [ret]   Two tuples containing the x, y, width, and height of
-        the eyes.
+        the eyes. If no eyes are detected within the face,
+        it returns a tuple of Nones.
 """
 def findEyes(faceWidth, gray, color):
     eyeList = []
@@ -77,6 +136,9 @@ def findEyes(faceWidth, gray, color):
         # Outline box
         # for (ex, ey, ew, eh) in feature:
         # cv2.rectangle(color, (ex, ey), (ex + ew, ey + eh), CASCADE_BOX_COLOR[i], 2)
+
+    if len(eyeList) == 0:
+        return None, None
 
     # Find the midline of all detected eye boxes
     midline = findFaceMidline(eyeList)
@@ -128,9 +190,29 @@ def testEveryImage():
                 destroyKresge()
 
 
+
 #######################
 # Utility Functions
 #######################
+"""
+[desc]  Takes the eye tuples and x,y reference point of the
+        face to put the touple in global coordinate form.
+        
+[eyes]  The eyes tuple. It is constructed with local coordinates
+
+[x]     The starting x coordinate of the face
+
+[y]     The starting y coordinate of the face
+
+[ret]   Returns the corrected eye tuples
+"""
+def packageEyes(eyes,x,y):
+    pkgEye = []
+    for (ex,ey,ew,eh) in eyes:
+        pkgEye.append((x+ex, x+ex+ew, y+ey, y+ey+eh ))
+    return pkgEye
+    
+
 """
 determineEyeMinSize()
 [desc]  Returns the minimum size of an eye box given a face
@@ -200,6 +282,7 @@ def averageEyeBoxes(eyeList, midline):
 
     return (eyeL, eyeR)
 
+
 """
 destroyKresge()
 [desc]  I endorse this.
@@ -217,5 +300,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
